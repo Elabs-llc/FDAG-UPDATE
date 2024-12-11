@@ -1,0 +1,254 @@
+import 'package:fdag/commons/colors/el_color.dart';
+import 'package:fdag/commons/colors/sizes.dart';
+import 'package:fdag/elabs/auth/app_model.dart';
+import 'package:fdag/elabs/config.dart';
+import 'package:fdag/models/poster_data.dart';
+import 'package:fdag/utils/device/network_type.dart';
+import 'package:fdag/utils/helpers/text_helper.dart';
+import 'package:fdag/utils/logging/logger.dart';
+import 'package:fdag/utils/widgets/line.dart';
+import 'package:flutter/material.dart';
+
+class AppWidgets {
+  AppModel appModel = AppModel();
+
+  /// Builds the chairperson's message card containing a photo and a brief message.
+  static Widget buildChairpersonMessageCard(
+      {required BuildContext context, String? message, int? length}) {
+    return Card(
+      color: ElColor.white,
+      elevation: Sizes.f14,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Line.verticalLine(color: ElColor.gold, width: Sizes.f001),
+                Line.space(),
+                Text(
+                  Config.remarkText,
+                  style: ElColor.blackColor2,
+                ),
+              ],
+            ),
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(Sizes.f1),
+                    child: Image.asset(
+                      'assets/images/ceo.jpg',
+                      width: Sizes.f6,
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      Config.defaultHead,
+                      style: ElColor.blackColor2,
+                    ),
+                    Text(
+                      TextHelper.truncateText(message ?? Config.defaultText,
+                          length: length ?? 120),
+                      style: ElColor.blackColor3,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        onPressed: () {}, // Navigate to Chairperson page
+                        child: Text(Config.read_more),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Builds a card containing quick links represented by icons.
+  Widget buildQuickLinks(BuildContext context) {
+    return Card(
+      color: ElColor.darkBlue200,
+      elevation: MediaQuery.of(context).size.width * 0.5,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: List.generate(4, (index) {
+            return _buildQuickLinkIcon();
+          }),
+        ),
+      ),
+    );
+  }
+
+  /// Returns a quick link icon wrapped in a circular container.
+  ClipRRect _buildQuickLinkIcon() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(Sizes.f4),
+      child: SizedBox(
+        width: Sizes.f10,
+        height: Sizes.f10,
+        child: ColoredBox(
+          color: ElColor.gold,
+          child: Icon(Icons.business_rounded),
+        ),
+      ),
+    );
+  }
+
+  /// Builds the section title
+  static Widget buildTitle(
+      {String? title,
+      double? padding,
+      Color? color,
+      double? fontSize,
+      double? iconSize,
+      Color? iconColor,
+      TextStyle? style,
+      Color? verticalLineColor,
+      double? verticalLineWidth,
+      IconData? icon,
+      Function? action}) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Line.verticalLine(
+              color: verticalLineColor ?? ElColor.gold,
+              width: verticalLineWidth ?? Sizes.f001),
+          Line.space(),
+          Text(
+            title ?? Config.defaultSectionTitle,
+            style: style ?? ElColor.blackColor2,
+          ),
+          Spacer(), // Add space between text and icon
+          IconButton(
+            highlightColor: ElColor.gold,
+            splashColor: ElColor.gold,
+            focusColor: ElColor.gold,
+            icon: Icon(icon ?? Icons.arrow_forward,
+                color: iconColor ?? ElColor.darkBlue),
+            onPressed: () {
+              // Add your onPressed logic here
+              action!();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  static buildPoster(
+      {required PosterData posterData,
+      ConnectionStatus? connectionStatus,
+      double? width,
+      double? height}) {
+    String imageUrl = posterData.imageUrl;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Stack(
+        children: [
+          // Using Image.network directly to reduce loading delay
+          Image.network(
+            connectionStatus == ConnectionStatus.none || imageUrl.isEmpty
+                ? 'assets/images/placeholder.png' // Show placeholder if no connection
+                : imageUrl, // Actual image URL
+            fit: BoxFit.cover,
+            width: width ?? 150,
+            height: height ?? 300,
+            loadingBuilder: (context, child, loadingProgress) {
+              // Show the loading indicator while the image is loading
+              if (loadingProgress == null) return child;
+              return Center(
+                child: CircularProgressIndicator(
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded /
+                          (loadingProgress.expectedTotalBytes ?? 1)
+                      : null,
+                ),
+              );
+            },
+            errorBuilder: (context, error, stackTrace) {
+              // If there's an error loading the image, show the placeholder
+              Logger.logLevel = 'ERROR';
+              Logger.error("Elabs App Log: Unable to fetch event image url");
+              return Image.asset('assets/images/placeholder.png',
+                  fit: BoxFit.cover);
+            },
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              padding: EdgeInsets.all(8.0),
+              color: ElColor.darkBlue500,
+              child: Text(
+                TextHelper.truncateText(posterData.title, length: 17),
+                style: TextStyle(
+                  color: ElColor.black,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+          Positioned(
+            top: 2,
+            right: 2,
+            child: PopupMenuButton(
+              padding: EdgeInsets.all(5.0),
+              icon: SizedBox(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(Sizes.f5),
+                  child: ColoredBox(
+                    color: ElColor.gold,
+                    child: Icon(
+                      Icons.more_vert,
+                      color: ElColor.darkBlue,
+                    ),
+                  ),
+                ),
+              ),
+              itemBuilder: (context) {
+                return [
+                  PopupMenuItem(
+                    value: "Favorite",
+                    textStyle: ElColor.blackColor3,
+                    child: Icon(Icons.favorite),
+                  ),
+                  PopupMenuItem(
+                    value: "Share",
+                    child: Icon(Icons.share),
+                  ),
+                ];
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// A widget representing a blank space, used for spacing in the layout.
+  static Widget blankSpace() {
+    return SizedBox(height: Sizes.f01);
+  }
+}

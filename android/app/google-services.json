@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "833480379281",
+    "project_id": "custom-fashion-app",
+    "storage_bucket": "custom-fashion-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:833480379281:android:54709aa56434871131e830",
+        "android_client_info": {
+          "package_name": "com.elabs.fdag"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "833480379281-qra3mrdfikjnvff5i5c7e16786eo1fmt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.elabs.fdag",
+            "certificate_hash": "01c16b55fddf527aadf986753291cbace1a75c0e"
+          }
+        },
+        {
+          "client_id": "833480379281-74t3aa4m30d185dupgq6ou79itsvggbm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTFFFa9m2-rxcHrk-cmSjLBxf1Z_wE__w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "833480379281-74t3aa4m30d185dupgq6ou79itsvggbm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "833480379281-rg9ig3g4cc7rcme85gl52g2tf0f3inb2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.elabs.fdag"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
