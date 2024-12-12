@@ -19,14 +19,22 @@ class AppModel {
   }
 
   /// Fetch chair person's message
-  Future<Map<String, dynamic>?> fetchChairpersonMessage() async {
+  Stream<Map<String, dynamic>?> fetchChairpersonMessage() {
     try {
-      DocumentSnapshot documentSnapshot =
-          await _firestore.collection('messages').doc('chairperson').get();
-      return documentSnapshot.data() as Map<String, dynamic>;
+      return _firestore
+          .collection('messages')
+          .doc('chairperson')
+          .snapshots()
+          .map((DocumentSnapshot documentSnapshot) {
+        if (documentSnapshot.exists) {
+          return documentSnapshot.data() as Map<String, dynamic>;
+        } else {
+          return null; // Handle cases where the document does not exist
+        }
+      });
     } catch (e) {
       Logger.error('Error fetching chairperson message: $e');
-      return null;
+      return const Stream.empty(); // Return an empty stream on error
     }
   }
 

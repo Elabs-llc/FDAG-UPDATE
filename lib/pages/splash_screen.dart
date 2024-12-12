@@ -2,7 +2,6 @@ import 'package:fdag/commons/colors/el_color.dart';
 import 'package:fdag/commons/colors/sizes.dart';
 import 'package:fdag/pages/auth/login.dart';
 import 'package:fdag/pages/home.dart';
-import 'package:fdag/pages/intro.dart';
 import 'package:fdag/utils/logging/logger.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

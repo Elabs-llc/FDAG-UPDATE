@@ -9,7 +9,6 @@ import 'package:fdag/pages/top_navigation.dart';
 import 'package:fdag/utils/device/network_provider.dart';
 import 'package:fdag/utils/device/network_type.dart';
 import 'package:fdag/utils/helpers/expande_notifier.dart';
-import 'package:fdag/utils/helpers/text_helper.dart';
 import 'package:fdag/utils/widgets/line.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
@@ -170,8 +169,8 @@ class HomeView extends ConsumerWidget {
   }
 
   Widget buildChairpersonFutureCard(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>?>(
-      future: appModel.fetchChairpersonMessage(),
+    return StreamBuilder<Map<String, dynamic>?>(
+      stream: appModel.fetchChairpersonMessage(),
       builder: (BuildContext context,
           AsyncSnapshot<Map<String, dynamic>?> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -180,12 +179,14 @@ class HomeView extends ConsumerWidget {
           return Center(child: Text('Error fetching chairperson message.'));
         } else if (snapshot.hasData && snapshot.data != null) {
           final data = snapshot.data!;
+          List<Map<String, dynamic>> contents = [data];
           return AppWidgets.buildChairpersonMessageCard(
             context: context,
             message: data['content'],
             imageUrl: data['imageUrl'],
             title: data['title'],
-            length: 120,
+            length: 110,
+            data: contents,
           );
         } else {
           return AppWidgets.buildChairpersonMessageCard(

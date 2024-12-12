@@ -1,33 +1,43 @@
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 // ChairpersonScreen
 class ChairpersonScreen extends StatefulWidget {
-  const ChairpersonScreen({super.key});
+  final Map<String, dynamic> data;
+
+  const ChairpersonScreen({super.key, required this.data});
 
   @override
   State<ChairpersonScreen> createState() => _ChairpersonScreenState();
 }
 
 class _ChairpersonScreenState extends State<ChairpersonScreen> {
-  // late VideoPlayerController _controller;
-  // bool _isVideoInitialized = false;
+  late YoutubePlayerController _controller;
 
   @override
   void initState() {
     super.initState();
-    // _controller = VideoPlayerController.networkUrl(
-    //   Uri.parse('YOUR_VIDEO_URL_HERE'),
-    // )..initialize().then((_) {
-    //     setState(() {
-    //       _isVideoInitialized = true;
-    //     });
-    //   });
+
+    // Ensure video controller is only initialized when the URL is valid
+    if (widget.data['videoUrl'] != null) {
+      debugPrint(widget.data['videoUrl']);
+      final videoId = YoutubePlayer.convertUrlToId(widget.data['videoUrl']);
+      _controller = YoutubePlayerController(
+        initialVideoId: videoId!,
+        flags: const YoutubePlayerFlags(
+          autoPlay: false,
+          mute: false,
+        ),
+      );
+    } else {
+      // Handle the case where there's no video URL
+      debugPrint("No video URL found.");
+    }
   }
 
   @override
   void dispose() {
-    // _controller.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -38,6 +48,7 @@ class _ChairpersonScreenState extends State<ChairpersonScreen> {
         slivers: [
           // Custom App Bar with Image
           SliverAppBar(
+            leading: Icon(Icons.arrow_back_ios),
             expandedHeight: 300,
             floating: false,
             pinned: true,
@@ -45,10 +56,23 @@ class _ChairpersonScreenState extends State<ChairpersonScreen> {
               background: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image.asset(
-                    'assets/images/placeholder.png',
-                    fit: BoxFit.cover,
-                  ),
+                  if (widget.data['imageUrl'] != null)
+                    FadeInImage.assetNetwork(
+                      placeholder:
+                          'assets/images/placeholder.png', // Placeholder image
+                      image: widget.data['imageUrl'] ?? '', // Fetched image URL
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: 200,
+                      imageErrorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          'assets/images/placeholder.png', // Fallback if image fails to load
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: 200,
+                        );
+                      },
+                    ),
                   // Gradient overlay
                   Container(
                     decoration: BoxDecoration(
@@ -57,15 +81,16 @@ class _ChairpersonScreenState extends State<ChairpersonScreen> {
                         end: Alignment.bottomCenter,
                         colors: [
                           Colors.transparent,
-                          Colors.black.withOpacity(0.7),
+                          Colors.black.withValues(
+                              alpha: 150, red: 0, green: 0, blue: 0),
                         ],
                       ),
                     ),
                   ),
                 ],
               ),
-              title: const Text(
-                'Jane Doe',
+              title: Text(
+                widget.data['name'],
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -86,8 +111,8 @@ class _ChairpersonScreenState extends State<ChairpersonScreen> {
                   // Title and Position
                   Row(
                     children: [
-                      const Text(
-                        'Chairperson',
+                      Text(
+                        widget.data['position'],
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
@@ -104,12 +129,7 @@ class _ChairpersonScreenState extends State<ChairpersonScreen> {
                             color: const Color(0xFF0077B5),
                           ),
                           IconButton(
-                            icon: Icon((Icons.earbuds_battery)),
-                            onPressed: () {},
-                            color: Color(0xFFE1306C),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.access_alarm_sharp),
+                            icon: Icon(Icons.phone_android),
                             onPressed: () {},
                             color: Color(0xFF1DA1F2),
                           ),
@@ -135,11 +155,11 @@ class _ChairpersonScreenState extends State<ChairpersonScreen> {
                         ),
                       ],
                     ),
-                    child: const Column(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Message from the Chairperson',
+                          widget.data['title'],
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
@@ -148,7 +168,7 @@ class _ChairpersonScreenState extends State<ChairpersonScreen> {
                         ),
                         SizedBox(height: 15),
                         Text(
-                          'Your message content goes here. This is a detailed message from the chairperson explaining their vision, mission, and thoughts about the fashion designer association...',
+                          widget.data['content'],
                           style: TextStyle(
                             fontSize: 16,
                             height: 1.6,
@@ -170,30 +190,13 @@ class _ChairpersonScreenState extends State<ChairpersonScreen> {
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        // _isVideoInitialized
-                        //     ? AspectRatio(
-                        //         aspectRatio: _controller.value.aspectRatio,
-                        //         child: VideoPlayer(_controller),
-                        //       )
-                        //     : const Center(
-                        //         child: CircularProgressIndicator(),
-                        //       ),
-                        // IconButton(
-                        //   icon: Icon(
-                        //     _controller.value.isPlaying
-                        //         ? Icons.pause_circle_filled
-                        //         : Icons.play_circle_filled,
-                        //     size: 60,
-                        //     color: Colors.white,
-                        //   ),
-                        //   onPressed: () {
-                        //     setState(() {
-                        //       _controller.value.isPlaying
-                        //           ? _controller.pause()
-                        //           : _controller.play();
-                        //     });
-                        //   },
-                        // ),
+                        YoutubePlayer(
+                          controller: _controller,
+                          showVideoProgressIndicator: true,
+                          onReady: () {
+                            debugPrint('Player is ready.');
+                          },
+                        ),
                       ],
                     ),
                   ),

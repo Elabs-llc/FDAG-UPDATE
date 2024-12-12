@@ -85,13 +85,13 @@ class AppWidgets {
   //   );
   // }
 
-  static Widget buildChairpersonMessageCard({
-    required BuildContext context,
-    String? message,
-    int? length,
-    String? imageUrl,
-    String? title,
-  }) {
+  static Widget buildChairpersonMessageCard(
+      {required BuildContext context,
+      String? message,
+      int? length,
+      String? imageUrl,
+      String? title,
+      List<Map<String, dynamic>>? data}) {
     // Fallbacks for missing parameters
     final defaultImage =
         'assets/images/placeholder.png'; // Placeholder image path
@@ -151,7 +151,7 @@ class AppWidgets {
                       TextHelper.truncateText(
                         message ??
                             defaultMessage, // Use default message if null
-                        length: length ?? 120,
+                        length: length ?? 100,
                       ),
                       style: ElColor.blackColor3,
                     ),
@@ -162,7 +162,9 @@ class AppWidgets {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => ChairpersonScreen()),
+                                builder: (_) => ChairpersonScreen(
+                                      data: data!.first,
+                                    )),
                           );
                         }, // Navigate to Chairperson page
                         child: Text(Config.read_more),
