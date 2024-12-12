@@ -66,15 +66,17 @@ class _SplashScreenState extends State<SplashScreen> {
       context,
       MaterialPageRoute(
         builder: (context) {
-          if (!hasSeenIntro) {
-            // Navigate to the Intro screen for first-time users.
-            return Intro(
-              onIntroComplete: onIntroComplete,
-            );
-          } else {
-            // Skip Intro and proceed to authentication check for returning users.
-            return _buildAuthStream();
-          }
+          // if (!hasSeenIntro) {
+          //   // Navigate to the Intro screen for first-time users.
+          //   return Intro(
+          //     onIntroComplete: onIntroComplete,
+          //   );
+          // } else {
+          //   // Skip Intro and proceed to authentication check for returning users.
+          //   return _buildAuthStream();
+          // }
+
+          return _buildAuthStream();
         },
       ),
     );

@@ -81,6 +81,30 @@ class EventModel implements PosterData {
     this.deletedOn,
   });
 
+  /// Converts the [EventModel] instance to a Map for storage or transmission.
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'desc': desc,
+      'imageUrl': imageUrl,
+      'date': date,
+      'time': time,
+      'location': location,
+      'link': link,
+      'status': status,
+      'type': type,
+      'category': category,
+      'videoLink': videoLink,
+      'createdBy': createdBy,
+      'createdOn': createdOn,
+      'updatedBy': updatedBy,
+      'updatedOn': updatedOn,
+      'deletedBy': deletedBy,
+      'deletedOn': deletedOn,
+    };
+  }
+
   // Factory constructor to create EventModel from Firestore document data
   factory EventModel.fromDocument(Map<String, dynamic> data) {
     return EventModel(

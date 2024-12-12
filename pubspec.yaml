@@ -45,6 +45,8 @@ dependencies:
   google_sign_in_ios: ^5.7.8
   shared_preferences: ^2.3.2
   device_info_plus: ^11.1.0
+  animate_do: ^3.3.4 
+  video_player: ^2.9.2
 
 dev_dependencies:
   flutter_test:

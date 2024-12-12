@@ -1,8 +1,10 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:fdag/commons/colors/el_color.dart';
 import 'package:fdag/commons/colors/sizes.dart';
 import 'package:fdag/elabs/auth/app_model.dart';
 import 'package:fdag/elabs/config.dart';
 import 'package:fdag/models/poster_data.dart';
+import 'package:fdag/pages/screens/chairperson_screen.dart';
 import 'package:fdag/utils/device/network_type.dart';
 import 'package:fdag/utils/helpers/text_helper.dart';
 import 'package:fdag/utils/logging/logger.dart';
@@ -13,8 +15,88 @@ class AppWidgets {
   AppModel appModel = AppModel();
 
   /// Builds the chairperson's message card containing a photo and a brief message.
-  static Widget buildChairpersonMessageCard(
-      {required BuildContext context, String? message, int? length}) {
+  // static Widget buildChairpersonMessageCard(
+  //     {required BuildContext context,
+  //     String? message,
+  //     int? length,
+  //     String? imageUrl}) {
+  //   return Card(
+  //     color: ElColor.white,
+  //     elevation: Sizes.f14,
+  //     child: Column(
+  //       mainAxisSize: MainAxisSize.min,
+  //       children: [
+  //         Padding(
+  //           padding: const EdgeInsets.all(8.0),
+  //           child: Row(
+  //             children: [
+  //               Line.verticalLine(color: ElColor.gold, width: Sizes.f001),
+  //               Line.space(),
+  //               Text(
+  //                 Config.remarkText,
+  //                 style: ElColor.blackColor2,
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //         Row(
+  //           children: [
+  //             Expanded(
+  //               child: Padding(
+  //                 padding: const EdgeInsets.all(8.0),
+  //                 child: ClipRRect(
+  //                   borderRadius: BorderRadius.circular(Sizes.f1),
+  //                   child: Image.asset(
+  //                     'assets/images/ceo.jpg',
+  //                     width: Sizes.f6,
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //             Expanded(
+  //               child: Column(
+  //                 mainAxisAlignment: MainAxisAlignment.start,
+  //                 mainAxisSize: MainAxisSize.min,
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   Text(
+  //                     Config.defaultHead,
+  //                     style: ElColor.blackColor2,
+  //                   ),
+  //                   Text(
+  //                     TextHelper.truncateText(message ?? Config.defaultText,
+  //                         length: length ?? 120),
+  //                     style: ElColor.blackColor3,
+  //                   ),
+  //                   Padding(
+  //                     padding: const EdgeInsets.all(8.0),
+  //                     child: ElevatedButton(
+  //                       onPressed: () {}, // Navigate to Chairperson page
+  //                       child: Text(Config.read_more),
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  static Widget buildChairpersonMessageCard({
+    required BuildContext context,
+    String? message,
+    int? length,
+    String? imageUrl,
+    String? title,
+  }) {
+    // Fallbacks for missing parameters
+    final defaultImage =
+        'assets/images/placeholder.png'; // Placeholder image path
+    final defaultMessage = Config.defaultText; // Default message text
+
     return Card(
       color: ElColor.white,
       elevation: Sizes.f14,
@@ -41,9 +123,16 @@ class AppWidgets {
                   padding: const EdgeInsets.all(8.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(Sizes.f1),
-                    child: Image.asset(
-                      'assets/images/ceo.jpg',
+                    child: FadeInImage.assetNetwork(
+                      placeholder: defaultImage, // Placeholder image
+                      image: imageUrl ??
+                          '', // Actual image URL (fallback to empty)
                       width: Sizes.f6,
+                      fit: BoxFit.cover,
+                      imageErrorBuilder: (context, error, stackTrace) {
+                        // Handle error: show placeholder image
+                        return Image.asset(defaultImage, width: Sizes.f6);
+                      },
                     ),
                   ),
                 ),
@@ -55,18 +144,27 @@ class AppWidgets {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      Config.defaultHead,
+                      title ?? Config.defaultHead,
                       style: ElColor.blackColor2,
                     ),
                     Text(
-                      TextHelper.truncateText(message ?? Config.defaultText,
-                          length: length ?? 120),
+                      TextHelper.truncateText(
+                        message ??
+                            defaultMessage, // Use default message if null
+                        length: length ?? 120,
+                      ),
                       style: ElColor.blackColor3,
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(
-                        onPressed: () {}, // Navigate to Chairperson page
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => ChairpersonScreen()),
+                          );
+                        }, // Navigate to Chairperson page
                         child: Text(Config.read_more),
                       ),
                     ),
@@ -250,5 +348,31 @@ class AppWidgets {
   /// A widget representing a blank space, used for spacing in the layout.
   static Widget blankSpace() {
     return SizedBox(height: Sizes.f01);
+  }
+
+  static buildCard({required String title, required List<Widget> children}) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      elevation: 4.0,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            FadeInUp(
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const SizedBox(height: 8.0),
+            ...children,
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fdag/models/event_model.dart';
+import 'package:fdag/models/spotlight_model.dart';
 import 'package:fdag/utils/logging/logger.dart';
 
 class AppModel {
@@ -58,6 +59,38 @@ class AppModel {
               .toList());
     } catch (e) {
       Logger.error('Error fetching completed events: $e');
+      // Return an empty stream in case of error
+      return Stream.value([]);
+    }
+  }
+
+  /// Fetching recents news or announcement for the association as a real-time stream
+  Stream<List<EventModel>> fetchNewsUpdates() {
+    try {
+      return _firestore.collection('newsUpdate').snapshots().map(
+            (querySnapshot) => querySnapshot.docs.map((doc) {
+              final data = doc.data();
+              return EventModel.fromDocument(data);
+            }).toList(),
+          );
+    } catch (e) {
+      Logger.error('Error fetching news updates: $e');
+      // Return an empty stream in case of error
+      return Stream.value([]);
+    }
+  }
+
+  /// Fetching spotlights
+  Stream<List<SpotlightModel>> fetchSpotlights() {
+    try {
+      return _firestore.collection('spotlights').snapshots().map(
+            (querySnapshot) => querySnapshot.docs.map((doc) {
+              final data = doc.data();
+              return SpotlightModel.fromDocument(data);
+            }).toList(),
+          );
+    } catch (e) {
+      Logger.error('Error fetching spotlights: $e');
       // Return an empty stream in case of error
       return Stream.value([]);
     }

@@ -1,5 +1,7 @@
 import 'dart:developer' as developer;
 
+import 'package:flutter/material.dart';
+
 /// A simple logging utility for this application
 ///
 /// This class provides methods to log messages with different severity levels,
@@ -85,6 +87,6 @@ class Logger {
     final logMessage = '[$timeStamp] [$level] $message';
     developer.log(logMessage);
     // Optionally, you can also print to console
-    print(logMessage);
+    debugPrint(logMessage);
   }
 }

@@ -4,6 +4,7 @@ import 'package:fdag/commons/widgets/app_widgets.dart';
 import 'package:fdag/elabs/auth/app_model.dart';
 import 'package:fdag/elabs/config.dart';
 import 'package:fdag/models/event_model.dart';
+import 'package:fdag/models/spotlight_model.dart';
 import 'package:fdag/pages/top_navigation.dart';
 import 'package:fdag/utils/device/network_provider.dart';
 import 'package:fdag/utils/device/network_type.dart';
@@ -33,52 +34,61 @@ class HomeView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    //final connectionStatus = ref.watch(connectivityProvider);
     final isExpanded = ref.watch(expandProvider);
 
     return Scaffold(
       backgroundColor: ElColor.darkBlue100,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TopNavigation(),
-                SizedBox(height: MediaQuery.of(context).size.width * 0.04),
-                _buildWelcomeCard(context, ref, isExpanded),
-                AppWidgets.blankSpace(),
-                AppWidgets.buildChairpersonMessageCard(
-                    context: context,
-                    message: TextHelper.truncateText(Config.defaultText,
-                        length: 120)),
-                AppWidgets.blankSpace(),
-                AppWidgets().buildQuickLinks(context),
-                AppWidgets.blankSpace(),
-
-                /// Builds the title for the upcoming events section.
-                AppWidgets.buildTitle(
-                    title: Config.event_title, icon: Icons.arrow_forward_ios),
-                _buildUpcomingEventsList(ref),
-                AppWidgets.blankSpace(),
-
-                /// Builds the title for the lastest news and update section.
-                AppWidgets.buildTitle(
-                    title: Config.latest_news_title,
-                    icon: Icons.arrow_forward_ios),
-                _buildNewsUpdateList(ref),
-                AppWidgets.blankSpace(),
-
-                /// Builds the title spotlight section section.
-                AppWidgets.buildTitle(
-                    title: Config.spotlight_title,
-                    icon: Icons.arrow_forward_ios),
-                _buildSpotlightList(ref),
-              ],
+        child: CustomScrollView(
+          slivers: [
+            // Sticky TopNavigation
+            SliverAppBar(
+              pinned: true,
+              backgroundColor: ElColor.darkBlue100,
+              flexibleSpace: TopNavigation(),
+              toolbarHeight:
+                  kToolbarHeight, // Adjust if TopNavigation has a custom height
             ),
-          ),
+
+            // Main content
+            SliverList(
+              delegate: SliverChildListDelegate([
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      _buildWelcomeCard(context, ref, isExpanded),
+                      AppWidgets.blankSpace(),
+                      buildChairpersonFutureCard(context),
+                      AppWidgets.blankSpace(),
+                      AppWidgets().buildQuickLinks(context),
+                      AppWidgets.blankSpace(),
+
+                      // Upcoming Events
+                      AppWidgets.buildTitle(
+                          title: Config.event_title,
+                          icon: Icons.arrow_forward_ios),
+                      _buildUpcomingEventsList(ref),
+                      AppWidgets.blankSpace(),
+
+                      // Latest News and Updates
+                      AppWidgets.buildTitle(
+                          title: Config.latest_news_title,
+                          icon: Icons.arrow_forward_ios),
+                      _buildNewsUpdateList(ref),
+                      AppWidgets.blankSpace(),
+
+                      // Spotlight
+                      AppWidgets.buildTitle(
+                          title: Config.spotlight_title,
+                          icon: Icons.arrow_forward_ios),
+                      _buildSpotlightList(ref),
+                    ],
+                  ),
+                ),
+              ]),
+            ),
+          ],
         ),
       ),
     );
@@ -156,6 +166,36 @@ class HomeView extends ConsumerWidget {
           return Center(child: Text('No welcome message available.'));
         },
       ),
+    );
+  }
+
+  Widget buildChairpersonFutureCard(BuildContext context) {
+    return FutureBuilder<Map<String, dynamic>?>(
+      future: appModel.fetchChairpersonMessage(),
+      builder: (BuildContext context,
+          AsyncSnapshot<Map<String, dynamic>?> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error fetching chairperson message.'));
+        } else if (snapshot.hasData && snapshot.data != null) {
+          final data = snapshot.data!;
+          return AppWidgets.buildChairpersonMessageCard(
+            context: context,
+            message: data['content'],
+            imageUrl: data['imageUrl'],
+            title: data['title'],
+            length: 120,
+          );
+        } else {
+          return AppWidgets.buildChairpersonMessageCard(
+            context: context,
+            message: null, // Default message
+            imageUrl: null, // Placeholder image
+            length: 120,
+          );
+        }
+      },
     );
   }
 
@@ -248,11 +288,32 @@ class HomeView extends ConsumerWidget {
     final connectionStatus = ref.watch(connectivityProvider);
     return SizedBox(
       height: 200.0,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: events.length,
-        itemBuilder: (context, index) {
-          //return AppWidgets.buildPoster(connectionStatus: connectionStatus, width: 260.0, height: 150.0);
+      child: StreamBuilder<List<EventModel>>(
+        stream: appModel.fetchNewsUpdates(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return AppWidgets.buildCard(title: "", children: [
+              Center(child: Text('Error fetching upcoming events.'))
+            ]);
+          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+            List<EventModel> events = snapshot.data!;
+            return ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: events.length,
+              itemBuilder: (context, index) {
+                return AppWidgets.buildPoster(
+                    posterData: events[index],
+                    connectionStatus: connectionStatus);
+              },
+            );
+          } else {
+            // No recent updates;
+            return AppWidgets.buildCard(title: "", children: [
+              Center(child: Text('No recent updates available.'))
+            ]);
+          }
         },
       ),
     );
@@ -263,11 +324,32 @@ class HomeView extends ConsumerWidget {
     final connectionStatus = ref.watch(connectivityProvider);
     return SizedBox(
       height: 200.0,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: events.length,
-        itemBuilder: (context, index) {
-          // return AppWidgets.buildPoster(connectionStatus: connectionStatus, width: 360.0, height: 150.0);
+      child: StreamBuilder<List<SpotlightModel>>(
+        stream: appModel.fetchSpotlights(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return AppWidgets.buildCard(title: "", children: [
+              Center(child: Text('Error fetching upcoming events.'))
+            ]);
+          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+            List<SpotlightModel> events = snapshot.data!;
+            return ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: events.length,
+              itemBuilder: (context, index) {
+                return AppWidgets.buildPoster(
+                    posterData: events[index],
+                    connectionStatus: connectionStatus);
+              },
+            );
+          } else {
+            // No upcoming spotlights
+            return AppWidgets.buildCard(title: "", children: [
+              Center(child: Text('No spotlights updates available.'))
+            ]);
+          }
         },
       ),
     );
