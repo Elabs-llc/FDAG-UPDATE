@@ -43,4 +43,6 @@ class Config {
   static const String event_title = "Events";
   static const String latest_news_title = "News & Updates";
   static const String spotlight_title = "Spotlights";
+  static const String phoneNumber = "+233 50 049 3321";
+  static const String emailAddress = "brainztech08@gmail.com";
 }

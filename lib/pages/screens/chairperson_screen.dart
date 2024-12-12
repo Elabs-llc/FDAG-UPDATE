@@ -1,3 +1,5 @@
+import 'package:fdag/elabs/config.dart';
+import 'package:fdag/utils/device/device_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -125,12 +127,18 @@ class _ChairpersonScreenState extends State<ChairpersonScreen> {
                         children: [
                           IconButton(
                             icon: const Icon(Icons.email),
-                            onPressed: () {},
+                            onPressed: () {
+                              DeviceHelper.sendEmail(
+                                  Config.emailAddress, context);
+                            },
                             color: const Color(0xFF0077B5),
                           ),
                           IconButton(
                             icon: Icon(Icons.phone_android),
-                            onPressed: () {},
+                            onPressed: () {
+                              DeviceHelper.callPhone(
+                                  Config.phoneNumber, context);
+                            },
                             color: Color(0xFF1DA1F2),
                           ),
                         ],
