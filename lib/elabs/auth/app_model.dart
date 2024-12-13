@@ -146,4 +146,77 @@ class AppModel {
       return [];
     }
   }
+
+  Future<String> getCategoryNameById(String categoryId) async {
+    try {
+      // Query to find the category by its ID
+      QuerySnapshot snapshot = await _firestore
+          .collection('category')
+          .where('id',
+              isEqualTo:
+                  categoryId) // Assuming 'id' is the field storing category ID
+          .limit(1) // Limit to 1 result since category IDs should be unique
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        // Fetch the first document (there should be only one)
+        var category = snapshot.docs[0];
+        return category['title'] ??
+            ''; // Assuming 'title' is the field for category title
+      } else {
+        return ''; // No category found for the provided ID
+      }
+    } catch (e) {
+      debugPrint("Error fetching category: $e");
+      return '';
+    }
+  }
+
+  Future<String> getAuthorNameById(String authorId) async {
+    try {
+      // Query to find the category by its ID
+      QuerySnapshot snapshot = await _firestore
+          .collection('authors')
+          .where('id',
+              isEqualTo:
+                  authorId) // Assuming 'id' is the field storing author ID
+          .limit(1) // Limit to 1 result since category IDs should be unique
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        // Fetch the first document (there should be only one)
+        var category = snapshot.docs[0];
+        return category['name'] ?? '';
+      } else {
+        return ''; // No category found for the provided ID
+      }
+    } catch (e) {
+      debugPrint("Error fetching category: $e");
+      return '';
+    }
+  }
+
+  Future<String> getAuthorImageById(String authorId) async {
+    try {
+      // Query to find the category by its ID
+      QuerySnapshot snapshot = await _firestore
+          .collection('authors')
+          .where('id',
+              isEqualTo:
+                  authorId) // Assuming 'id' is the field storing author ID
+          .limit(1) // Limit to 1 result since category IDs should be unique
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        // Fetch the first document (there should be only one)
+        var category = snapshot.docs[0];
+        return category['profilePic'] ?? '';
+      } else {
+        return ''; // No category found for the provided ID
+      }
+    } catch (e) {
+      debugPrint("Error fetching category: $e");
+      return '';
+    }
+  }
 }

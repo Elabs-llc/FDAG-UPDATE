@@ -1,4 +1,6 @@
+import 'package:fdag/elabs/auth/app_model.dart';
 import 'package:fdag/models/event_model.dart';
+import 'package:fdag/utils/helpers/text_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -58,7 +60,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                   Hero(
                     tag: 'news_image_1', // Unique tag for animation
                     child: Image.asset(
-                      'assets/news_image.jpg',
+                      'assets/images/placeholder.png',
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -83,7 +85,8 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
               child: CircleAvatar(
                 backgroundColor: Colors.white,
                 child: IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.black),
+                  icon:
+                      const Icon(Icons.arrow_back_ios_new, color: Colors.black),
                   onPressed: () => Navigator.pop(context),
                 ),
               ),
@@ -100,6 +103,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                   padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
                   child: Row(
                     children: [
+                      // Category Label
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 12,
@@ -109,12 +113,34 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                           color: const Color(0xFF6C5CE7),
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: const Text(
-                          'Fashion Show',
-                          style: TextStyle(color: Colors.white),
+                        child: FutureBuilder<String>(
+                          future: AppModel().getCategoryNameById(widget
+                              .data.category!), // Fetch category name by ID
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return CircularProgressIndicator(); // Show loading indicator
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}',
+                                  style: const TextStyle(
+                                      color: Colors.white)); // Handle error
+                            } else if (snapshot.hasData) {
+                              return Text(
+                                snapshot.data?.toUpperCase() ??
+                                    'Category not found',
+                                style: const TextStyle(color: Colors.white),
+                              ); // Display category title
+                            } else {
+                              return Text('Category not found',
+                                  style: const TextStyle(
+                                      color:
+                                          Colors.white)); // Fallback if no data
+                            }
+                          },
                         ),
                       ),
                       const SizedBox(width: 10),
+                      // Status Label
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 12,
@@ -124,9 +150,9 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                           color: const Color(0xFF00B894),
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: const Text(
-                          'Upcoming',
-                          style: TextStyle(color: Colors.white),
+                        child: Text(
+                          widget.data.status!.toUpperCase(),
+                          style: const TextStyle(color: Colors.white),
                         ),
                       ),
                     ],
@@ -134,10 +160,10 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                 ),
 
                 // Title
-                const Padding(
+                Padding(
                   padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
                   child: Text(
-                    'Annual Fashion Designer Awards 2024',
+                    widget.data.title,
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -164,19 +190,19 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                   ),
                   child: Column(
                     children: [
-                      const ListTile(
+                      ListTile(
                         leading: Icon(Icons.calendar_today,
                             color: Color(0xFF6C5CE7)),
                         title: Text('Date'),
-                        subtitle: Text('December 15, 2024'),
+                        subtitle: Text(TextHelper.formatDate(widget.data.date)),
                         contentPadding: EdgeInsets.zero,
                       ),
                       const Divider(),
-                      const ListTile(
+                      ListTile(
                         leading:
                             Icon(Icons.access_time, color: Color(0xFF6C5CE7)),
                         title: Text('Time'),
-                        subtitle: Text('7:00 PM - 10:00 PM'),
+                        subtitle: Text(widget.data.time!),
                         contentPadding: EdgeInsets.zero,
                       ),
                       const Divider(),
@@ -184,7 +210,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                         leading: const Icon(Icons.location_on,
                             color: Color(0xFF6C5CE7)),
                         title: const Text('Location'),
-                        subtitle: const Text('Grand Fashion Arena'),
+                        subtitle: Text(widget.data.location!),
                         trailing: IconButton(
                           icon: const Icon(Icons.map_outlined),
                           onPressed: () {
@@ -200,7 +226,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                 // Description
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 20),
-                  child: const Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
@@ -213,7 +239,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                       ),
                       SizedBox(height: 10),
                       Text(
-                        'Join us for the most prestigious fashion event of the year. The Annual Fashion Designer Awards celebrates excellence in fashion design and innovation...',
+                        widget.data.desc,
                         style: TextStyle(
                           fontSize: 16,
                           height: 1.6,
@@ -275,16 +301,71 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                   ),
                   child: Row(
                     children: [
-                      const CircleAvatar(
+                      // CircleAvatar to display the author's image with fade-in effect
+                      // CircleAvatar with FadeInImage widget for the author's profile picture
+                      CircleAvatar(
                         radius: 25,
-                        backgroundImage: AssetImage('assets/poster_avatar.jpg'),
+                        child: FutureBuilder<String>(
+                          future: AppModel().getAuthorImageById(widget.data
+                              .createdBy), // Fetch the author's profile image by ID
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              // Show placeholder while loading
+                              return FadeInImage.assetNetwork(
+                                placeholder: 'assets/images/placeholder.png',
+                                image: '', // No image URL yet
+                                fadeInDuration: Duration(milliseconds: 300),
+                                width:
+                                    50, // Set the width and height to match the CircleAvatar size
+                                height: 50,
+                                fit: BoxFit.cover,
+                              );
+                            } else if (snapshot.hasError) {
+                              // Show placeholder if there is an error
+                              return FadeInImage.assetNetwork(
+                                placeholder: 'assets/images/placeholder.png',
+                                image:
+                                    '', // Fallback to placeholder in case of error
+                                fadeInDuration: Duration(milliseconds: 300),
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                              );
+                            } else if (snapshot.hasData &&
+                                snapshot.data!.isNotEmpty) {
+                              // Show the actual image when data is available
+                              return FadeInImage.assetNetwork(
+                                placeholder: 'assets/images/placeholder.png',
+                                image:
+                                    snapshot.data!, // Use the fetched image URL
+                                fadeInDuration: Duration(milliseconds: 300),
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                              );
+                            } else {
+                              // Show placeholder if no image URL is found
+                              return FadeInImage.assetNetwork(
+                                placeholder: 'assets/images/placeholder.png',
+                                image:
+                                    '', // Fallback to placeholder if no data is found
+                                fadeInDuration: Duration(milliseconds: 300),
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                              );
+                            }
+                          },
+                        ),
                       ),
+
                       const SizedBox(width: 15),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               'Posted by',
                               style: TextStyle(
                                 color: Color(0xFF636E72),
@@ -292,15 +373,42 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                               ),
                             ),
                             const SizedBox(height: 4),
-                            const Text(
-                              'Sarah Johnson',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
+                            FutureBuilder<String>(
+                              future: AppModel().getAuthorNameById(widget
+                                  .data.createdBy), // Fetch auhtor name by ID
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return CircularProgressIndicator(); // Show loading indicator
+                                } else if (snapshot.hasError) {
+                                  return Text(
+                                    'FDAG',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ); // Handle error
+                                } else if (snapshot.hasData) {
+                                  return Text(
+                                    snapshot.data?.toUpperCase() ?? 'FDAG',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ); // Display category title
+                                } else {
+                                  return Text(
+                                    'FDAG',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ); // Fallback if no data
+                                }
+                              },
                             ),
                             Text(
-                              'Posted on ${DateFormat('MMM dd, yyyy').format(DateTime.now())}',
+                              'Posted on ${TextHelper.formatDate(widget.data.createdOn!)}',
                               style: const TextStyle(
                                 color: Color(0xFF636E72),
                                 fontSize: 14,
