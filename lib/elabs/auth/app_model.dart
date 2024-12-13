@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fdag/models/event_model.dart';
 import 'package:fdag/models/spotlight_model.dart';
 import 'package:fdag/utils/logging/logger.dart';
+import 'package:flutter/material.dart';
 
 class AppModel {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -101,6 +102,48 @@ class AppModel {
       Logger.error('Error fetching spotlights: $e');
       // Return an empty stream in case of error
       return Stream.value([]);
+    }
+  }
+
+  Stream<List<Map<String, dynamic>>> fetchEvents(
+      String collection, String? category) {
+    Query query = _firestore.collection(collection);
+    if (category != null && category != 'All') {
+      query = query.where('category', isEqualTo: category);
+    }
+    return query.snapshots().map((snapshot) {
+      return snapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+    });
+  }
+
+  Future<Map<String, String>> fetchAuthorDetails(String authorId) async {
+    try {
+      DocumentSnapshot authorSnapshot =
+          await _firestore.collection('authors').doc(authorId).get();
+      if (authorSnapshot.exists) {
+        var data = authorSnapshot.data() as Map<String, dynamic>;
+        return {
+          'name': data['name'] ?? 'Unknown Author',
+          'profilePic': data['profilePic'] ?? '',
+        };
+      }
+    } catch (e) {
+      debugPrint("Error fetching author details: $e");
+    }
+    return {'name': 'FDAG', 'profilePic': ''};
+  }
+
+  Future<List<Map<String, dynamic>>> fetchCategories() async {
+    try {
+      QuerySnapshot snapshot = await _firestore.collection('category').get();
+      return snapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+    } catch (e) {
+      debugPrint("Error fetching categories: $e");
+      return [];
     }
   }
 }

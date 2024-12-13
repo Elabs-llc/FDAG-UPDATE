@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 /// The `TextHelper` class provides utility methods for handling and manipulating text.
 ///
 /// This class is not meant to be instantiated and contains only static methods for text manipulation.
@@ -46,5 +48,20 @@ class TextHelper {
   static String truncateText(String text, {int length = 50}) {
     if (text.length <= length) return text;
     return '${text.substring(0, length)}...';
+  }
+
+  static String formatDate(String inputDate) {
+    try {
+      // Parse the input date in "DD/MM/YYYY" format
+      DateTime dateTime = DateFormat('dd/MM/yyyy').parse(inputDate);
+
+      // Format the date into "MMM dd, yyyy"
+      String formattedDate = DateFormat('MMM dd, yyyy').format(dateTime);
+
+      return formattedDate;
+    } catch (e) {
+      // Handle errors if the input date is invalid
+      return 'Invalid date';
+    }
   }
 }

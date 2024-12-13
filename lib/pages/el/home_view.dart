@@ -66,7 +66,10 @@ class HomeView extends ConsumerWidget {
                       // Upcoming Events
                       AppWidgets.buildTitle(
                           title: Config.event_title,
-                          icon: Icons.arrow_forward_ios),
+                          icon: Icons.arrow_forward_ios,
+                          action: () {
+                            Navigator.pushNamed(context, '/allEvents');
+                          }),
                       _buildUpcomingEventsList(ref),
                       AppWidgets.blankSpace(),
 

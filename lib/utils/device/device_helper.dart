@@ -59,4 +59,17 @@ class DeviceHelper {
       debugPrint('Could not launch phone app');
     }
   }
+
+  // Function to open the URL in an in-app browser
+  static Future<void> launchInBrowser(String url, BuildContext context) async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(
+      uri,
+      mode: LaunchMode.inAppWebView, // Opens in an in-app browser
+    )) {
+      UiHelper.showSnackBar(context, 'Could not launch browser',
+          type: SnackBarType.error);
+      debugPrint('Could not launch $url');
+    }
+  }
 }

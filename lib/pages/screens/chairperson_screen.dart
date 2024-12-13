@@ -50,7 +50,10 @@ class _ChairpersonScreenState extends State<ChairpersonScreen> {
         slivers: [
           // Custom App Bar with Image
           SliverAppBar(
-            leading: Icon(Icons.arrow_back_ios),
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back_ios),
+              onPressed: () => Navigator.pop(context),
+            ),
             expandedHeight: 300,
             floating: false,
             pinned: true,
@@ -156,7 +159,7 @@ class _ChairpersonScreenState extends State<ChairpersonScreen> {
                       borderRadius: BorderRadius.circular(15),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.1),
+                          color: Colors.grey.withValues(alpha: 100),
                           spreadRadius: 5,
                           blurRadius: 7,
                           offset: const Offset(0, 3),
@@ -183,6 +186,18 @@ class _ChairpersonScreenState extends State<ChairpersonScreen> {
                             color: Color(0xFF34495E),
                           ),
                         ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        if (widget.data['isInternal'] ==
+                            false) // Check for the condition
+                          ElevatedButton(
+                            onPressed: () {
+                              DeviceHelper.launchInBrowser(
+                                  widget.data['link'], context);
+                            },
+                            child: const Text('View More'),
+                          ),
                       ],
                     ),
                   ),
@@ -218,7 +233,7 @@ class _ChairpersonScreenState extends State<ChairpersonScreen> {
                       color: const Color(0xFF2C3E50),
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: const Column(
+                    child: Column(
                       children: [
                         Icon(
                           Icons.format_quote,
@@ -227,7 +242,7 @@ class _ChairpersonScreenState extends State<ChairpersonScreen> {
                         ),
                         SizedBox(height: 10),
                         Text(
-                          '"Fashion is about dreaming and making other people dream."',
+                          '"${widget.data['closingQuote']}"',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 18,
