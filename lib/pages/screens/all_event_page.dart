@@ -1,3 +1,4 @@
+import 'package:fdag/pages/screens/event_details_page.dart';
 import 'package:fdag/utils/helpers/text_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,7 +17,7 @@ class _AllEventPageState extends State<AllEventPage> {
   String _selectedCategory = 'All';
   List<Map<String, dynamic>> _categories = []; // List to store categories
   Map<String, String> _categoryTitles = {}; // Map category IDs to titles
-  Map<String, Map<String, String>> _authorData = {};
+  final Map<String, Map<String, String>> _authorData = {};
 
   @override
   void initState() {
@@ -106,204 +107,213 @@ class _AllEventPageState extends State<AllEventPage> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return SliverFillRemaining(
                     child: Center(child: CircularProgressIndicator()));
-              }
-
-              if (snapshot.hasError) {
+              } else if (snapshot.hasError) {
                 return SliverFillRemaining(
                     child: Center(child: Text('Error: ${snapshot.error}')));
               }
-              if (!snapshot.hasData) {
-                return SliverFillRemaining(
-                  child: Center(child: CircularProgressIndicator()),
-                );
-              }
-
               // Check if the data is empty
-              if (snapshot.data!.isEmpty) {
+              else if (snapshot.data!.isEmpty) {
                 return SliverFillRemaining(
                   child: Center(child: Text("No events available.")),
                 );
-              }
+              } else if (snapshot.hasData && snapshot.data != null) {
+                //final contents = snapshot.data!;
 
-              return AnimationLimiter(
-                child: SliverPadding(
-                  padding: const EdgeInsets.all(16),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        var event = snapshot.data![index];
-                        String imageUrl = event.imageUrl;
-                        String categoryTitle =
-                            _categoryTitles[event.category] ??
-                                'Unknown Category';
+                return AnimationLimiter(
+                  child: SliverPadding(
+                    padding: const EdgeInsets.all(16),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          var event = snapshot.data![index];
+                          String imageUrl = event.imageUrl;
+                          String categoryTitle =
+                              _categoryTitles[event.category] ??
+                                  'Unknown Category';
 
-                        return AnimationConfiguration.staggeredList(
-                          position: index,
-                          duration: const Duration(milliseconds: 375),
-                          child: SlideAnimation(
-                            verticalOffset: 50.0,
-                            child: FadeInAnimation(
-                              child: Container(
-                                margin: const EdgeInsets.only(bottom: 16),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(20),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withAlpha(50),
-                                      spreadRadius: 2,
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      onTap: () {
-                                        // Navigate to event details
-                                        N
-                                      },
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          // Image Section
-                                          Stack(
-                                            children: [
-                                              FadeInImage.assetNetwork(
-                                                placeholder:
-                                                    'assets/images/placeholder.png',
-                                                image: imageUrl,
-                                                height: 200,
-                                                width: double.infinity,
-                                                fit: BoxFit.cover,
+                          return AnimationConfiguration.staggeredList(
+                            position: index,
+                            duration: const Duration(milliseconds: 375),
+                            child: SlideAnimation(
+                              verticalOffset: 50.0,
+                              child: FadeInAnimation(
+                                child: Container(
+                                  margin: const EdgeInsets.only(bottom: 16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withAlpha(50),
+                                        spreadRadius: 2,
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        onTap: () {
+                                          // Navigate to event details
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EventDetailsPage(
+                                                data: event,
                                               ),
-                                              Positioned(
-                                                top: 16,
-                                                left: 16,
-                                                child: Container(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 12,
-                                                      vertical: 6),
-                                                  decoration: BoxDecoration(
-                                                    color:
-                                                        const Color(0xFF6C5CE7),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20),
-                                                  ),
-                                                  child: Text(
-                                                    categoryTitle,
-                                                    style: const TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 12),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          // Content Section
-                                          Padding(
-                                            padding: const EdgeInsets.all(16),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                            ),
+                                          );
+                                        },
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            // Image Section
+                                            Stack(
                                               children: [
-                                                Text(
-                                                  event.title,
-                                                  style: const TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Color(0xFF2D3436),
+                                                FadeInImage.assetNetwork(
+                                                  placeholder:
+                                                      'assets/images/placeholder.png',
+                                                  image: imageUrl,
+                                                  height: 200,
+                                                  width: double.infinity,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                                Positioned(
+                                                  top: 16,
+                                                  left: 16,
+                                                  child: Container(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 12,
+                                                        vertical: 6),
+                                                    decoration: BoxDecoration(
+                                                      color: const Color(
+                                                          0xFF6C5CE7),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20),
+                                                    ),
+                                                    child: Text(
+                                                      categoryTitle,
+                                                      style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 12),
+                                                    ),
                                                   ),
-                                                ),
-                                                const SizedBox(height: 8),
-                                                Text(
-                                                  event.desc,
-                                                  style: const TextStyle(
-                                                      fontSize: 14,
-                                                      color: Colors.grey),
-                                                ),
-                                                const SizedBox(height: 16),
-                                                Row(
-                                                  children: [
-                                                    CircleAvatar(
-                                                      radius: 15,
-                                                      backgroundImage: (_authorData[
-                                                                          event
-                                                                              .createdBy]
-                                                                      ?[
-                                                                      'profilePic']
-                                                                  ?.isNotEmpty ??
-                                                              false)
-                                                          ? NetworkImage(
-                                                              _authorData[event
-                                                                      .createdBy]![
-                                                                  'profilePic']!)
-                                                          : AssetImage(
-                                                                  'assets/images/placeholder.png')
-                                                              as ImageProvider,
-                                                    ),
-                                                    const SizedBox(width: 8),
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(
-                                                            _authorData[event
-                                                                        .createdBy]
-                                                                    ?['name'] ??
-                                                                'FDAG',
-                                                            style: const TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontSize: 14),
-                                                          ),
-                                                          Text(
-                                                            'Date:  ${TextHelper.formatDate(event.createdOn ?? '')}',
-                                                            style:
-                                                                const TextStyle(
-                                                              fontSize: 12,
-                                                              color:
-                                                                  Colors.grey,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    IconButton(
-                                                      icon: const Icon(
-                                                          Icons.bookmark_border,
-                                                          color: Color(
-                                                              0xFF6C5CE7)),
-                                                      onPressed: () {},
-                                                    ),
-                                                  ],
                                                 ),
                                               ],
                                             ),
-                                          ),
-                                        ],
+                                            // Content Section
+                                            Padding(
+                                              padding: const EdgeInsets.all(16),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    event.title,
+                                                    style: const TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Color(0xFF2D3436),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 8),
+                                                  Text(
+                                                    event.desc,
+                                                    style: const TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.grey),
+                                                  ),
+                                                  const SizedBox(height: 16),
+                                                  Row(
+                                                    children: [
+                                                      CircleAvatar(
+                                                        radius: 15,
+                                                        backgroundImage: (_authorData[
+                                                                            event.createdBy]
+                                                                        ?[
+                                                                        'profilePic']
+                                                                    ?.isNotEmpty ??
+                                                                false)
+                                                            ? NetworkImage(
+                                                                _authorData[event
+                                                                        .createdBy]![
+                                                                    'profilePic']!)
+                                                            : AssetImage(
+                                                                    'assets/images/placeholder.png')
+                                                                as ImageProvider,
+                                                      ),
+                                                      const SizedBox(width: 8),
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              _authorData[event
+                                                                          .createdBy]
+                                                                      ?[
+                                                                      'name'] ??
+                                                                  'FDAG',
+                                                              style: const TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize: 14),
+                                                            ),
+                                                            Text(
+                                                              'Date:  ${TextHelper.formatDate(event.createdOn ?? '')}',
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 12,
+                                                                color:
+                                                                    Colors.grey,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      IconButton(
+                                                        icon: const Icon(
+                                                            Icons
+                                                                .bookmark_border,
+                                                            color: Color(
+                                                                0xFF6C5CE7)),
+                                                        onPressed: () {},
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                      childCount: snapshot.data!.length,
+                          );
+                        },
+                        childCount: snapshot.data!.length,
+                      ),
                     ),
                   ),
-                ),
+                );
+              }
+
+              // Fallback return in case none of the above conditions match
+              return SliverFillRemaining(
+                child: Center(child: Text("Something went wrong.")),
               );
             },
           ),

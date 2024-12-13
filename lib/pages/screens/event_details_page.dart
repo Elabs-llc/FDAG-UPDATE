@@ -1,25 +1,26 @@
+import 'package:fdag/models/event_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-class NewsDetailPage extends StatefulWidget {
-  final Map<String, dynamic> data;
-  const NewsDetailPage({super.key, required this.data});
+class EventDetailsPage extends StatefulWidget {
+  final EventModel data;
+  const EventDetailsPage({super.key, required this.data});
 
   @override
-  State<NewsDetailPage> createState() => _NewsDetailPageState();
+  State<EventDetailsPage> createState() => _EventDetailsPageState();
 }
 
-class _NewsDetailPageState extends State<NewsDetailPage> {
+class _EventDetailsPageState extends State<EventDetailsPage> {
   late YoutubePlayerController _controller;
 
   @override
   void initState() {
     super.initState();
     // Ensure video controller is only initialized when the URL is valid
-    if (widget.data['videoUrl'] != null) {
-      debugPrint(widget.data['videoUrl']);
-      final videoId = YoutubePlayer.convertUrlToId(widget.data['videoUrl']);
+    if (widget.data.videoLink != null) {
+      debugPrint(widget.data.videoLink);
+      final videoId = YoutubePlayer.convertUrlToId(widget.data.videoLink!);
       _controller = YoutubePlayerController(
         initialVideoId: videoId!,
         flags: const YoutubePlayerFlags(
