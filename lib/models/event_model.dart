@@ -16,6 +16,8 @@ class EventModel implements PosterData {
   @override
   final String imageUrl;
 
+  final String? eventBanner;
+
   /// Date of the event. This field is required.
   final String date;
 
@@ -65,6 +67,7 @@ class EventModel implements PosterData {
     required this.title,
     required this.desc,
     required this.imageUrl,
+    this.eventBanner,
     required this.date,
     this.time,
     this.location,
@@ -88,6 +91,7 @@ class EventModel implements PosterData {
       'title': title,
       'desc': desc,
       'imageUrl': imageUrl,
+      'eventBanner': eventBanner,
       'date': date,
       'time': time,
       'location': location,
@@ -112,6 +116,7 @@ class EventModel implements PosterData {
       title: data['title'] ?? '',
       desc: data['desc'] ?? '',
       imageUrl: data['imageUrl'] ?? '',
+      eventBanner: data['eventBanner'] ?? '',
       date: data['date'] ?? '',
       time: data['time'] ?? '',
       location: data['location'] ?? '',

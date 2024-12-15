@@ -2,7 +2,6 @@ import 'package:fdag/elabs/auth/app_model.dart';
 import 'package:fdag/models/event_model.dart';
 import 'package:fdag/utils/helpers/text_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class EventDetailsPage extends StatefulWidget {
@@ -21,24 +20,26 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
     super.initState();
     // Ensure video controller is only initialized when the URL is valid
     if (widget.data.videoLink != null) {
-      debugPrint(widget.data.videoLink);
       final videoId = YoutubePlayer.convertUrlToId(widget.data.videoLink!);
-      _controller = YoutubePlayerController(
-        initialVideoId: videoId!,
-        flags: const YoutubePlayerFlags(
-          autoPlay: false,
-          mute: false,
-        ),
-      );
+      if (videoId != null) {
+        _controller = YoutubePlayerController(
+          initialVideoId: videoId,
+          flags: const YoutubePlayerFlags(
+            autoPlay: false,
+            mute: false,
+          ),
+        );
+      } else {
+        debugPrint("Invalid video URL.");
+      }
     } else {
-      // Handle the case where there's no video URL
       debugPrint("No video URL found.");
     }
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    //_controller.dispose();
     super.dispose();
   }
 
@@ -59,11 +60,18 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                 children: [
                   Hero(
                     tag: 'news_image_1', // Unique tag for animation
-                    child: Image.asset(
-                      'assets/images/placeholder.png',
-                      fit: BoxFit.cover,
-                    ),
+                    child: widget.data.imageUrl.isNotEmpty == true
+                        ? Image.network(
+                            widget.data
+                                .eventBanner!, // Use the actual image if it's not empty
+                            fit: BoxFit.cover,
+                          )
+                        : Image.asset(
+                            'assets/images/placeholder.png', // Default placeholder if imageUrl is empty or null
+                            fit: BoxFit.cover,
+                          ),
                   ),
+
                   // Gradient overlay
                   Container(
                     decoration: BoxDecoration(
@@ -72,7 +80,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                         end: Alignment.bottomCenter,
                         colors: [
                           Colors.transparent,
-                          Colors.black.withValues(alpha: 100),
+                          Colors.black.withAlpha(100),
                         ],
                       ),
                     ),
@@ -303,62 +311,72 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                     children: [
                       // CircleAvatar to display the author's image with fade-in effect
                       // CircleAvatar with FadeInImage widget for the author's profile picture
-                      CircleAvatar(
-                        radius: 25,
-                        child: FutureBuilder<String>(
-                          future: AppModel().getAuthorImageById(widget.data
-                              .createdBy), // Fetch the author's profile image by ID
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              // Show placeholder while loading
-                              return FadeInImage.assetNetwork(
-                                placeholder: 'assets/images/placeholder.png',
-                                image: '', // No image URL yet
-                                fadeInDuration: Duration(milliseconds: 300),
-                                width:
-                                    50, // Set the width and height to match the CircleAvatar size
-                                height: 50,
-                                fit: BoxFit.cover,
-                              );
-                            } else if (snapshot.hasError) {
-                              // Show placeholder if there is an error
-                              return FadeInImage.assetNetwork(
-                                placeholder: 'assets/images/placeholder.png',
-                                image:
-                                    '', // Fallback to placeholder in case of error
-                                fadeInDuration: Duration(milliseconds: 300),
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.cover,
-                              );
-                            } else if (snapshot.hasData &&
-                                snapshot.data!.isNotEmpty) {
-                              // Show the actual image when data is available
-                              return FadeInImage.assetNetwork(
-                                placeholder: 'assets/images/placeholder.png',
-                                image:
-                                    snapshot.data!, // Use the fetched image URL
-                                fadeInDuration: Duration(milliseconds: 300),
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.cover,
-                              );
-                            } else {
-                              // Show placeholder if no image URL is found
-                              return FadeInImage.assetNetwork(
-                                placeholder: 'assets/images/placeholder.png',
-                                image:
-                                    '', // Fallback to placeholder if no data is found
-                                fadeInDuration: Duration(milliseconds: 300),
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.cover,
-                              );
-                            }
-                          },
-                        ),
-                      ),
+                      // CircleAvatar(
+                      //   radius: 25,
+                      //   child: FutureBuilder<String>(
+                      //     future: AppModel().getAuthorImageById(widget.data
+                      //         .createdBy), // Fetch the author's profile image by ID
+                      //     builder: (context, snapshot) {
+                      //       if (snapshot.connectionState ==
+                      //           ConnectionState.waiting) {
+                      //         // Show placeholder while loading
+                      //         return FadeInImage.assetNetwork(
+                      //           placeholder: 'assets/images/placeholder.png',
+                      //           image: '', // No image URL yet
+                      //           fadeInDuration: Duration(milliseconds: 300),
+                      //           width:
+                      //               50, // Set the width and height to match the CircleAvatar size
+                      //           height: 50,
+                      //           fit: BoxFit.cover,
+                      //         );
+                      //       } else if (snapshot.hasError) {
+                      //         // Show placeholder if there is an error
+                      //         return FadeInImage.assetNetwork(
+                      //           placeholder: 'assets/images/placeholder.png',
+                      //           image:
+                      //               '', // Fallback to placeholder in case of error
+                      //           fadeInDuration: Duration(milliseconds: 300),
+                      //           width: 50,
+                      //           height: 50,
+                      //           fit: BoxFit.cover,
+                      //         );
+                      //       } else if (snapshot.hasData &&
+                      //           snapshot.data!.isNotEmpty) {
+                      //         // Show the actual image when data is available
+                      //         return FadeInImage.assetNetwork(
+                      //           placeholder: 'assets/images/placeholder.png',
+                      //           image: snapshot.data ??
+                      //               '', // Provide fallback for null URLs
+                      //           fadeInDuration:
+                      //               const Duration(milliseconds: 300),
+                      //           imageErrorBuilder:
+                      //               (context, error, stackTrace) {
+                      //             return Image.asset(
+                      //               'assets/images/placeholder.png',
+                      //               width: 50,
+                      //               height: 50,
+                      //               fit: BoxFit.cover,
+                      //             ); // Fallback image on error
+                      //           },
+                      //           width: 50,
+                      //           height: 50,
+                      //           fit: BoxFit.cover,
+                      //         );
+                      //       } else {
+                      //         // Show placeholder if no image URL is found
+                      //         return FadeInImage.assetNetwork(
+                      //           placeholder: 'assets/images/placeholder.png',
+                      //           image:
+                      //               '', // Fallback to placeholder if no data is found
+                      //           fadeInDuration: Duration(milliseconds: 300),
+                      //           width: 50,
+                      //           height: 50,
+                      //           fit: BoxFit.cover,
+                      //         );
+                      //       }
+                      //     },
+                      //   ),
+                      // ),
 
                       const SizedBox(width: 15),
                       Expanded(
@@ -428,11 +446,15 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                     children: [
                       Expanded(
                         child: ElevatedButton.icon(
-                          icon: const Icon(Icons.share),
+                          icon: const Icon(
+                            Icons.share,
+                            color: Colors.white,
+                          ),
                           label: const Text('Share'),
                           onPressed: () {},
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF6C5CE7),
+                            backgroundColor:
+                                const Color.fromARGB(255, 42, 107, 248),
                             padding: const EdgeInsets.symmetric(vertical: 15),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),

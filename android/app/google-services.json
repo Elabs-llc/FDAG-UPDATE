@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "833480379281-qra3mrdfikjnvff5i5c7e16786eo1fmt.apps.googleusercontent.com",
+          "client_id": "833480379281-j88la5rkbs5nq9nrvtbcrq1eppjf975r.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.elabs.fdag",
-            "certificate_hash": "01c16b55fddf527aadf986753291cbace1a75c0e"
+            "certificate_hash": "4063395df458d367ace3fb11d0d351e0562601b5"
           }
         },
         {

@@ -18,6 +18,8 @@ class SpotlightModel implements PosterData {
   @override
   final String imageUrl;
 
+  final String? spotlightBanner;
+
   /// URL of the video associated with the spotlight entry, if available.
   final String? videoUrl;
 
@@ -51,6 +53,7 @@ class SpotlightModel implements PosterData {
     required this.title,
     required this.description,
     required this.imageUrl,
+    this.spotlightBanner,
     this.videoUrl,
     required this.category,
     required this.spotlightMonth,
@@ -69,6 +72,7 @@ class SpotlightModel implements PosterData {
       title: data['title'] ?? '',
       description: data['description'] ?? '',
       imageUrl: data['imageUrl'] ?? '',
+      spotlightBanner: data['spotlightBanner'] ?? '',
       videoUrl: data['videoUrl'],
       category: data['category'] ?? '',
       spotlightMonth: data['spotlightMonth'] ?? '',
@@ -88,6 +92,7 @@ class SpotlightModel implements PosterData {
       'title': title,
       'description': description,
       'imageUrl': imageUrl,
+      'spotlightBanner': spotlightBanner,
       'videoUrl': videoUrl,
       'category': category,
       'spotlightMonth': spotlightMonth,
