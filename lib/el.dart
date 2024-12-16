@@ -2,6 +2,7 @@ import 'package:fdag/pages/auth/login.dart';
 import 'package:fdag/pages/auth/signup.dart';
 import 'package:fdag/pages/home.dart';
 import 'package:fdag/pages/screens/all_event_page.dart';
+import 'package:fdag/pages/screens/by_laws_page.dart';
 import 'package:fdag/pages/splash_screen.dart';
 import 'package:fdag/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,7 @@ class El extends StatelessWidget {
         '/login': (contex) => Login(),
         '/signup': (contex) => Signup(),
         '/allEvents': (contex) => AllEventPage(),
+        '/byLaws': (contex) => BylawsPage(),
       },
     );
   }

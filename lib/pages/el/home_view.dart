@@ -12,6 +12,7 @@ import 'package:fdag/utils/helpers/expande_notifier.dart';
 import 'package:fdag/utils/widgets/line.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 /// A [ConsumerWidget] representing the home view of the application,
 /// displaying various sections such as welcome message, chairperson's message,
@@ -60,7 +61,16 @@ class HomeView extends ConsumerWidget {
                       AppWidgets.blankSpace(),
                       buildChairpersonFutureCard(context),
                       AppWidgets.blankSpace(),
-                      AppWidgets().buildQuickLinks(context),
+                      AppWidgets().buildQuickLinks(
+                        context: context,
+                        childIcon: SvgPicture.asset(
+                          "assets/icons/laws.svg",
+                          fit: BoxFit.cover,
+                        ),
+                        action: () {
+                          Navigator.pushNamed(context, '/byLaws');
+                        },
+                      ),
                       AppWidgets.blankSpace(),
 
                       // Upcoming Events
@@ -221,8 +231,11 @@ class HomeView extends ConsumerWidget {
               scrollDirection: Axis.horizontal,
               itemCount: events.length,
               itemBuilder: (context, index) {
+                var event = snapshot.data![index];
                 return AppWidgets.buildPoster(
                     posterData: events[index],
+                    context: context,
+                    event: event,
                     connectionStatus: connectionStatus);
               },
             );
@@ -246,6 +259,7 @@ class HomeView extends ConsumerWidget {
                     itemBuilder: (context, index) {
                       return buildCompletedEventPoster(
                           event: completedEvents[index],
+                          context: context,
                           connectionStatus: connectionStatus);
                     },
                   );
@@ -262,11 +276,16 @@ class HomeView extends ConsumerWidget {
 
   /// Builds an event poster for completed events with a "Completed" tag overlay.
   Widget buildCompletedEventPoster(
-      {required EventModel event, ConnectionStatus? connectionStatus}) {
+      {required EventModel event,
+      ConnectionStatus? connectionStatus,
+      BuildContext? context}) {
     return Stack(
       children: [
         AppWidgets.buildPoster(
-            posterData: event, connectionStatus: connectionStatus),
+            posterData: event,
+            event: event,
+            context: context,
+            connectionStatus: connectionStatus),
         Positioned(
           top: 10,
           left: 10,

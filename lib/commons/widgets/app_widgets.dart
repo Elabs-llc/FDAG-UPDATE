@@ -3,8 +3,10 @@ import 'package:fdag/commons/colors/el_color.dart';
 import 'package:fdag/commons/colors/sizes.dart';
 import 'package:fdag/elabs/auth/app_model.dart';
 import 'package:fdag/elabs/config.dart';
+import 'package:fdag/models/event_model.dart';
 import 'package:fdag/models/poster_data.dart';
 import 'package:fdag/pages/screens/chairperson_screen.dart';
+import 'package:fdag/pages/screens/event_details_page.dart';
 import 'package:fdag/utils/device/network_type.dart';
 import 'package:fdag/utils/helpers/text_helper.dart';
 import 'package:fdag/utils/logging/logger.dart';
@@ -181,7 +183,8 @@ class AppWidgets {
   }
 
   /// Builds a card containing quick links represented by icons.
-  Widget buildQuickLinks(BuildContext context) {
+  Widget buildQuickLinks(
+      {required BuildContext context, Widget? childIcon, Function? action}) {
     return Card(
       color: ElColor.darkBlue200,
       elevation: MediaQuery.of(context).size.width * 0.5,
@@ -189,16 +192,21 @@ class AppWidgets {
         padding: const EdgeInsets.all(8.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: List.generate(4, (index) {
-            return _buildQuickLinkIcon();
-          }),
+          children: [
+            _buildQuickLinkIcon(child: childIcon, action: action),
+          ],
+          // children: List.generate(4, (index) {
+          //   // Return a quick link icon
+
+          //   return _buildQuickLinkIcon();
+          // }),
         ),
       ),
     );
   }
 
   /// Returns a quick link icon wrapped in a circular container.
-  ClipRRect _buildQuickLinkIcon() {
+  ClipRRect _buildQuickLinkIcon({Widget? child, Function? action}) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(Sizes.f4),
       child: SizedBox(
@@ -206,7 +214,13 @@ class AppWidgets {
         height: Sizes.f10,
         child: ColoredBox(
           color: ElColor.gold,
-          child: Icon(Icons.business_rounded),
+          child: InkWell(
+              child: child,
+              // icon ?? Icons.business_rounded),
+              onTap: () {
+                // Implement quick link functionality
+                action!();
+              }),
         ),
       ),
     );
@@ -256,93 +270,108 @@ class AppWidgets {
 
   static buildPoster(
       {required PosterData posterData,
+      EventModel? event,
       ConnectionStatus? connectionStatus,
+      BuildContext? context,
       double? width,
       double? height}) {
     String imageUrl = posterData.imageUrl;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Stack(
-        children: [
-          // Using Image.network directly to reduce loading delay
-          Image.network(
-            connectionStatus == ConnectionStatus.none || imageUrl.isEmpty
-                ? 'assets/images/placeholder.png' // Show placeholder if no connection
-                : imageUrl, // Actual image URL
-            fit: BoxFit.cover,
-            width: width ?? 150,
-            height: height ?? 300,
-            loadingBuilder: (context, child, loadingProgress) {
-              // Show the loading indicator while the image is loading
-              if (loadingProgress == null) return child;
-              return Center(
-                child: CircularProgressIndicator(
-                  value: loadingProgress.expectedTotalBytes != null
-                      ? loadingProgress.cumulativeBytesLoaded /
-                          (loadingProgress.expectedTotalBytes ?? 1)
-                      : null,
-                ),
-              );
-            },
-            errorBuilder: (context, error, stackTrace) {
-              // If there's an error loading the image, show the placeholder
-              Logger.logLevel = 'ERROR';
-              Logger.error("Elabs App Log: Unable to fetch event image url");
-              return Image.asset('assets/images/placeholder.png',
-                  fit: BoxFit.cover);
-            },
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              padding: EdgeInsets.all(8.0),
-              color: ElColor.darkBlue500,
-              child: Text(
-                TextHelper.truncateText(posterData.title, length: 17),
-                style: TextStyle(
-                  color: ElColor.black,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
+    return InkWell(
+      onTap: () {
+        // Navigate to event details
+        Navigator.push(
+          context!,
+          MaterialPageRoute(
+            builder: (context) => EventDetailsPage(
+              data: event!,
             ),
           ),
-          Positioned(
-            top: 2,
-            right: 2,
-            child: PopupMenuButton(
-              padding: EdgeInsets.all(5.0),
-              icon: SizedBox(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(Sizes.f5),
-                  child: ColoredBox(
-                    color: ElColor.gold,
-                    child: Icon(
-                      Icons.more_vert,
-                      color: ElColor.darkBlue,
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Stack(
+          children: [
+            // Using Image.network directly to reduce loading delay
+            Image.network(
+              connectionStatus == ConnectionStatus.none || imageUrl.isEmpty
+                  ? 'assets/images/placeholder.png' // Show placeholder if no connection
+                  : imageUrl, // Actual image URL
+              fit: BoxFit.cover,
+              width: width ?? 150,
+              height: height ?? 300,
+              loadingBuilder: (context, child, loadingProgress) {
+                // Show the loading indicator while the image is loading
+                if (loadingProgress == null) return child;
+                return Center(
+                  child: CircularProgressIndicator(
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            (loadingProgress.expectedTotalBytes ?? 1)
+                        : null,
+                  ),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) {
+                // If there's an error loading the image, show the placeholder
+                Logger.logLevel = 'ERROR';
+                Logger.error("Elabs App Log: Unable to fetch event image url");
+                return Image.asset('assets/images/placeholder.png',
+                    fit: BoxFit.cover);
+              },
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                padding: EdgeInsets.all(8.0),
+                color: ElColor.darkBlue500,
+                child: Text(
+                  TextHelper.truncateText(posterData.title, length: 17),
+                  style: TextStyle(
+                    color: ElColor.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+            Positioned(
+              top: 2,
+              right: 2,
+              child: PopupMenuButton(
+                padding: EdgeInsets.all(5.0),
+                icon: SizedBox(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(Sizes.f5),
+                    child: ColoredBox(
+                      color: ElColor.gold,
+                      child: Icon(
+                        Icons.more_vert,
+                        color: ElColor.darkBlue,
+                      ),
                     ),
                   ),
                 ),
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem(
+                      value: "Favorite",
+                      textStyle: ElColor.blackColor3,
+                      child: Icon(Icons.favorite),
+                    ),
+                    PopupMenuItem(
+                      value: "Share",
+                      child: Icon(Icons.share),
+                    ),
+                  ];
+                },
               ),
-              itemBuilder: (context) {
-                return [
-                  PopupMenuItem(
-                    value: "Favorite",
-                    textStyle: ElColor.blackColor3,
-                    child: Icon(Icons.favorite),
-                  ),
-                  PopupMenuItem(
-                    value: "Share",
-                    child: Icon(Icons.share),
-                  ),
-                ];
-              },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
