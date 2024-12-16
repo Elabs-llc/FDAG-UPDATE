@@ -320,7 +320,7 @@ class _BylawSectionCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withAlpha(50),
             spreadRadius: 2,
             blurRadius: 8,
             offset: const Offset(0, 2),
@@ -334,7 +334,7 @@ class _BylawSectionCard extends StatelessWidget {
             section.icon,
             width: 24,
             height: 24,
-            color: const Color(0xFF6C5CE7),
+            // color: const Color(0xFF6C5CE7),
           ),
           title: Text(
             section.title,

@@ -20,16 +20,6 @@ import 'package:flutter_svg/svg.dart';
 class HomeView extends ConsumerWidget {
   AppModel appModel = AppModel();
 
-  final List<String> events = [
-    'Event 1',
-    'Event 2',
-    'Event 3',
-    'Event 4',
-    'Event 5',
-    'Event 6',
-    'Event 7',
-  ];
-
   HomeView({super.key});
 
   @override
@@ -64,7 +54,7 @@ class HomeView extends ConsumerWidget {
                       AppWidgets().buildQuickLinks(
                         context: context,
                         childIcon: SvgPicture.asset(
-                          "assets/icons/laws.svg",
+                          "assets/icons/law.svg",
                           fit: BoxFit.cover,
                         ),
                         action: () {
