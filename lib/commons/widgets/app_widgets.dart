@@ -184,16 +184,16 @@ class AppWidgets {
 
   /// Builds a card containing quick links represented by icons.
   Widget buildQuickLinks(
-      {required BuildContext context, Widget? childIcon, Function? action}) {
+      {required BuildContext context, List<Widget>? children}) {
     return Card(
-      color: ElColor.darkBlue200,
+      color: ElColor.white,
       elevation: MediaQuery.of(context).size.width * 0.5,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _buildQuickLinkIcon(child: childIcon, action: action),
+            ...?children,
           ],
           // children: List.generate(4, (index) {
           //   // Return a quick link icon
@@ -206,14 +206,14 @@ class AppWidgets {
   }
 
   /// Returns a quick link icon wrapped in a circular container.
-  ClipRRect _buildQuickLinkIcon({Widget? child, Function? action}) {
+  Widget buildQuickLinkIcon({Widget? child, Function? action, Color? color}) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(Sizes.f4),
       child: SizedBox(
         width: Sizes.f10,
         height: Sizes.f10,
         child: ColoredBox(
-          color: ElColor.gold,
+          color: color ?? ElColor.gold,
           child: InkWell(
               child: child,
               // icon ?? Icons.business_rounded),
@@ -457,6 +457,35 @@ class AppWidgets {
           ),
         ),
       ],
+    );
+  }
+
+  static Widget buildNavItem({
+    required IconData icon,
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            size: Sizes.xl,
+            color: isSelected ? ElColor.textWhite : ElColor.black,
+          ),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: isSelected ? ElColor.textWhite : ElColor.black,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

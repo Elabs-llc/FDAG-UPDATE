@@ -53,13 +53,38 @@ class HomeView extends ConsumerWidget {
                       AppWidgets.blankSpace(),
                       AppWidgets().buildQuickLinks(
                         context: context,
-                        childIcon: SvgPicture.asset(
-                          "assets/icons/law.svg",
-                          fit: BoxFit.cover,
-                        ),
-                        action: () {
-                          Navigator.pushNamed(context, '/byLaws');
-                        },
+                        children: [
+                          AppWidgets().buildQuickLinkIcon(
+                            color: Colors.white,
+                            child: SvgPicture.asset(
+                              "assets/icons/law.svg",
+                              fit: BoxFit.contain,
+                            ),
+                            action: () {
+                              Navigator.pushNamed(context, '/byLaws');
+                            },
+                          ),
+                          AppWidgets().buildQuickLinkIcon(
+                            color: Colors.white,
+                            child: SvgPicture.asset(
+                              "assets/icons/objective.svg",
+                              fit: BoxFit.cover,
+                            ),
+                            action: () {
+                              Navigator.pushNamed(context, '/missionVision');
+                            },
+                          ),
+                          AppWidgets().buildQuickLinkIcon(
+                            color: Colors.white,
+                            child: SvgPicture.asset(
+                              "assets/icons/membership01.svg",
+                              fit: BoxFit.cover,
+                            ),
+                            action: () {
+                              Navigator.pushNamed(context, '/byLaws');
+                            },
+                          ),
+                        ],
                       ),
                       AppWidgets.blankSpace(),
 

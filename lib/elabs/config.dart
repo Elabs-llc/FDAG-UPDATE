@@ -29,8 +29,8 @@ class Config {
 
   static const String bottomNavHomeText = "Home";
   static const String bottomNavGalleryText = "Gallery";
-  static const String bottomNavMVText = "Mission & Vission";
-  static const String bottomNavByText = "By-Laws";
+  static const String bottomNavMVText = "Explore";
+  static const String bottomNavByText = "More";
 
   static const String defaultHead = "Elabs LLC";
 

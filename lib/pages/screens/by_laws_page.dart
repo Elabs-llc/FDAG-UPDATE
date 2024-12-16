@@ -51,19 +51,19 @@ class _BylawsPageState extends State<BylawsPage> {
         slivers: [
           // Custom App Bar
           SliverAppBar(
-            expandedHeight: 200,
+            expandedHeight: 240,
             floating: false,
             pinned: true,
-            backgroundColor: const Color(0xFF6C5CE7),
+            backgroundColor: const Color.fromARGB(83, 3, 3, 3),
             flexibleSpace: FlexibleSpaceBar(
               background: Stack(
                 fit: StackFit.expand,
                 children: [
                   // Background Pattern
-                  // SvgPicture.asset(
-                  //   'assets/pattern.svg',
-                  //   fit: BoxFit.cover,
-                  // ),
+                  SvgPicture.asset(
+                    'assets/icons/business-law.svg',
+                    fit: BoxFit.cover,
+                  ),
                   // Gradient Overlay
                   Container(
                     decoration: BoxDecoration(
@@ -111,7 +111,8 @@ class _BylawsPageState extends State<BylawsPage> {
               child: CircleAvatar(
                 backgroundColor: Colors.white.withAlpha(50),
                 child: IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  icon:
+                      const Icon(Icons.arrow_back_ios_new, color: Colors.white),
                   onPressed: () => Navigator.pop(context),
                 ),
               ),

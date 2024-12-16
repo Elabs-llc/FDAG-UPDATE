@@ -1,5 +1,6 @@
 import 'package:fdag/commons/colors/el_color.dart';
 import 'package:fdag/commons/colors/sizes.dart';
+import 'package:fdag/commons/widgets/app_widgets.dart';
 import 'package:fdag/elabs/config.dart';
 import 'package:fdag/pages/el/by_laws.dart';
 import 'package:fdag/pages/el/gallery.dart';
@@ -62,7 +63,7 @@ class _HomeState extends State<Home> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         padding: const EdgeInsets.symmetric(horizontal: 10),
-        height: 60,
+        height: 70, // Increased height to fit titles
         color: ElColor.gold,
         shape: const CircularNotchedRectangle(),
         notchMargin: Sizes.f001,
@@ -70,80 +71,30 @@ class _HomeState extends State<Home> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
           children: [
-            IconButton(
-              tooltip: Config.bottomNavHomeText,
-              style: ButtonStyle(
-                backgroundColor: _selectedIndex == 0
-                    ? WidgetStatePropertyAll(ElColor.darkBlue500)
-                    : WidgetStatePropertyAll(ElColor.transparent),
-              ),
-              icon: Icon(
-                size: Sizes.xl,
-                Icons.home,
-                semanticLabel: Config.bottomNavHomeText,
-                color:
-                    _selectedIndex == 0 ? ElColor.textWhite : ElColor.darkBlue,
-              ),
-              onPressed: () {
-                onIconPressed(0);
-              },
+            AppWidgets.buildNavItem(
+              icon: Icons.home,
+              label: Config.bottomNavHomeText,
+              isSelected: _selectedIndex == 0,
+              onTap: () => onIconPressed(0),
             ),
-            IconButton(
-              tooltip: Config.bottomNavGalleryText,
-              style: ButtonStyle(
-                backgroundColor: _selectedIndex == 1
-                    ? WidgetStatePropertyAll(ElColor.darkBlue500)
-                    : WidgetStatePropertyAll(ElColor.transparent),
-              ),
-              icon: Icon(
-                semanticLabel: Config.bottomNavGalleryText,
-                size: Sizes.xl,
-                Icons.image_rounded,
-                color:
-                    _selectedIndex == 1 ? ElColor.textWhite : ElColor.darkBlue,
-              ),
-              onPressed: () {
-                onIconPressed(1);
-              },
+            AppWidgets.buildNavItem(
+              icon: Icons.image_rounded,
+              label: Config.bottomNavGalleryText,
+              isSelected: _selectedIndex == 1,
+              onTap: () => onIconPressed(1),
             ),
-            SizedBox(
-              width: Sizes.f1,
+            SizedBox(width: Sizes.f1), // Spacer for the floating action button
+            AppWidgets.buildNavItem(
+              icon: Icons.explore,
+              label: Config.bottomNavMVText,
+              isSelected: _selectedIndex == 2,
+              onTap: () => onIconPressed(2),
             ),
-            IconButton(
-              tooltip: Config.bottomNavMVText,
-              style: ButtonStyle(
-                backgroundColor: _selectedIndex == 2
-                    ? WidgetStatePropertyAll(ElColor.darkBlue500)
-                    : WidgetStatePropertyAll(ElColor.transparent),
-              ),
-              icon: Icon(
-                semanticLabel: Config.bottomNavMVText,
-                size: Sizes.xl,
-                Icons.business_rounded,
-                color:
-                    _selectedIndex == 2 ? ElColor.textWhite : ElColor.darkBlue,
-              ),
-              onPressed: () {
-                onIconPressed(2);
-              },
-            ),
-            IconButton(
-              tooltip: Config.bottomNavByText,
-              style: ButtonStyle(
-                backgroundColor: _selectedIndex == 3
-                    ? WidgetStatePropertyAll(ElColor.darkBlue500)
-                    : WidgetStatePropertyAll(ElColor.transparent),
-              ),
-              icon: Icon(
-                semanticLabel: Config.bottomNavByText,
-                size: Sizes.xl,
-                Icons.auto_stories_rounded,
-                color:
-                    _selectedIndex == 3 ? ElColor.textWhite : ElColor.darkBlue,
-              ),
-              onPressed: () {
-                onIconPressed(3);
-              },
+            AppWidgets.buildNavItem(
+              icon: Icons.menu,
+              label: Config.bottomNavByText,
+              isSelected: _selectedIndex == 3,
+              onTap: () => onIconPressed(3),
             ),
           ],
         ),
