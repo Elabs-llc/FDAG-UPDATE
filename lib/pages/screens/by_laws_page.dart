@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class BylawsPage extends StatefulWidget {
-  const BylawsPage({Key? key}) : super(key: key);
+  const BylawsPage({super.key});
 
   @override
   State<BylawsPage> createState() => _BylawsPageState();

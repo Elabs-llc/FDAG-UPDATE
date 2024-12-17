@@ -1,5 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fdag/models/event.dart';
 import 'package:fdag/models/event_model.dart';
+import 'package:fdag/models/founder.dart';
+import 'package:fdag/models/gallery_model.dart';
+import 'package:fdag/models/image_model.dart';
+import 'package:fdag/models/show.dart';
 import 'package:fdag/models/spotlight_model.dart';
 import 'package:fdag/utils/logging/logger.dart';
 import 'package:flutter/material.dart';
@@ -218,5 +223,89 @@ class AppModel {
       debugPrint("Error fetching category: $e");
       return '';
     }
+  }
+
+  /// Fetch a single gallery document by ID
+  Future<GalleryModel> getGallery(String galleryId) async {
+    final doc = await _firestore.collection('gallery').doc(galleryId).get();
+    final gallery = GalleryModel.fromFirestore(doc);
+
+    // Fetch subcollections for the gallery
+    gallery.founders = await getFounders(galleryId);
+    gallery.events = await getEvents(galleryId);
+    gallery.shows = await getShows(galleryId);
+
+    return gallery;
+  }
+
+  /// Fetch all founders for a specific gallery
+  Future<List<Founder>> getFounders(String galleryId) async {
+    final querySnapshot = await _firestore
+        .collection('gallery')
+        .doc(galleryId)
+        .collection('founders')
+        .get();
+
+    return querySnapshot.docs.map((doc) => Founder.fromFirestore(doc)).toList();
+  }
+
+  /// Fetch all events for a specific gallery
+  Future<List<Event>> getEvents(String galleryId) async {
+    final querySnapshot = await _firestore
+        .collection('gallery')
+        .doc(galleryId)
+        .collection('events')
+        .get();
+
+    // Populate images for each event
+    final events = await Future.wait(querySnapshot.docs.map((doc) async {
+      Event event = Event.fromFirestore(doc);
+
+      // Fetch images for the event
+      final images = await getImages(galleryId, 'events', event.id);
+
+      // Return a new Event with updated images
+      return event.copyWith(images: images);
+    }));
+
+    return events;
+  }
+
+  /// Fetch all shows for a specific gallery
+  Future<List<Show>> getShows(String galleryId) async {
+    final querySnapshot = await _firestore
+        .collection('gallery')
+        .doc(galleryId)
+        .collection('shows')
+        .get();
+
+    // Populate images for each show
+    final shows = await Future.wait(querySnapshot.docs.map((doc) async {
+      Show show = Show.fromFirestore(doc);
+
+      // Fetch images for the show
+      final images = await getImages(galleryId, 'shows', show.id);
+
+      // Return a new Show with updated images
+      return show.copyWith(images: images);
+    }));
+
+    return shows;
+  }
+
+  /// Fetch all images for a specific event or show
+  Future<List<ImageModel>> getImages(
+      String galleryId, String subcollection, String documentId) async {
+    final querySnapshot = await _firestore
+        .collection('gallery')
+        .doc(galleryId)
+        .collection(subcollection)
+        .doc(documentId)
+        .collection('images')
+        .get();
+
+    return querySnapshot.docs
+        .map((doc) => ImageModel.fromFirestore(doc))
+        .toList();
   }
 }

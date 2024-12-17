@@ -12,6 +12,7 @@ import 'package:fdag/utils/helpers/text_helper.dart';
 import 'package:fdag/utils/logging/logger.dart';
 import 'package:fdag/utils/widgets/line.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class AppWidgets {
   AppModel appModel = AppModel();
@@ -192,6 +193,7 @@ class AppWidgets {
         padding: const EdgeInsets.all(8.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ...?children,
           ],
@@ -485,6 +487,397 @@ class AppWidgets {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget buildAllGallery(
+      {String? imageUrl, String? title, String? date, VoidCallback? onTap}) {
+    return MasonryGridView.count(
+      padding: const EdgeInsets.all(16),
+      crossAxisCount: 2,
+      mainAxisSpacing: 16,
+      crossAxisSpacing: 16,
+      itemCount: 10,
+      itemBuilder: (context, index) {
+        return _buildGalleryItem(
+          imageUrl: imageUrl ?? 'assets/images/placeholder.png',
+          title: title ?? 'Fashion Week',
+          date: date ?? '',
+          height: index.isEven ? 280 : 200,
+          onTap: onTap ?? () {},
+        );
+      },
+    );
+  }
+
+  Widget _buildGalleryItem({
+    String? imageUrl,
+    String? title,
+    String? date,
+    double? height,
+    VoidCallback? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap!,
+      child: Container(
+        height: height!,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withAlpha(20),
+              spreadRadius: 2,
+              blurRadius: 8,
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.asset(
+                imageUrl!,
+                fit: BoxFit.cover,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withAlpha(10),
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 12,
+                left: 12,
+                right: 12,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title!,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      date!,
+                      style: TextStyle(
+                        color: Colors.white.withAlpha(2),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildFoundingMembers(
+      {String? estDate,
+      String? name,
+      String? role,
+      String? imageUrl,
+      int? count}) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        // Founding Year Section
+        Text(
+          estDate ?? 'Established 2024',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF2D3436),
+          ),
+        ),
+        const SizedBox(height: 20),
+        // Founding Members Grid
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 0.8,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+          ),
+          itemCount: count ?? 6,
+          itemBuilder: (context, index) {
+            return _buildFounderCard(
+              name: name ?? 'FDAG',
+              role: role ?? '',
+              imageUrl: imageUrl ?? 'assets/images/placeholder.png',
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFounderCard({
+    String? name,
+    String? role,
+    String? imageUrl,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(50),
+            spreadRadius: 2,
+            blurRadius: 8,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(15),
+                ),
+                image: DecorationImage(
+                  image: AssetImage(imageUrl!),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name!,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                Text(
+                  role!,
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildEventsGallery(
+      {String? title,
+      String? date,
+      String? location,
+      String? imageUrl,
+      int? count}) {
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: count ?? 5,
+      itemBuilder: (context, index) {
+        return _buildEventCard(
+          title: title ?? 'FDAG',
+          date: date ?? '',
+          location: location ?? '',
+          imageUrl: imageUrl ?? 'assets/images/placeholder.png',
+        );
+      },
+    );
+  }
+
+  Widget _buildEventCard({
+    String? title,
+    String? date,
+    String? location,
+    String? imageUrl,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(50),
+            spreadRadius: 2,
+            blurRadius: 8,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 200,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(15),
+              ),
+              image: DecorationImage(
+                image: AssetImage(imageUrl!),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title!,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.calendar_today,
+                      size: 16,
+                      color: Color(0xFF6C5CE7),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      date!,
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    const Icon(
+                      Icons.location_on,
+                      size: 16,
+                      color: Color(0xFF6C5CE7),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      location!,
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildFashionShows(
+      {int? count, String? title, String? year, String? imageUrl}) {
+    return GridView.builder(
+      padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.8,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+      ),
+      itemCount: count ?? 8,
+      itemBuilder: (context, index) {
+        return _buildFashionShowCard(
+          title: title ?? 'FDAG',
+          year: year ?? '',
+          imageUrl: imageUrl ?? 'assets/images/placeholder.png',
+        );
+      },
+    );
+  }
+
+  Widget _buildFashionShowCard({
+    String? title,
+    String? year,
+    String? imageUrl,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(5),
+            spreadRadius: 2,
+            blurRadius: 8,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.asset(
+              imageUrl!,
+              fit: BoxFit.cover,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withAlpha(50),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 12,
+              left: 12,
+              right: 12,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title!,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    year!,
+                    style: TextStyle(
+                      color: Colors.white.withAlpha(2),
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

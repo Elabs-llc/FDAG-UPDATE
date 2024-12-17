@@ -77,6 +77,16 @@ class HomeView extends ConsumerWidget {
                           AppWidgets().buildQuickLinkIcon(
                             color: Colors.white,
                             child: SvgPicture.asset(
+                              "assets/icons/founder.svg",
+                              fit: BoxFit.contain,
+                            ),
+                            action: () {
+                              Navigator.pushNamed(context, '/byLaws');
+                            },
+                          ),
+                          AppWidgets().buildQuickLinkIcon(
+                            color: Colors.white,
+                            child: SvgPicture.asset(
                               "assets/icons/membership01.svg",
                               fit: BoxFit.cover,
                             ),
