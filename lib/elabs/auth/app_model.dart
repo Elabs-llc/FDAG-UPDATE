@@ -226,34 +226,119 @@ class AppModel {
   }
 
   /// Fetch a single gallery document by ID
-  Future<GalleryModel> getGallery(String galleryId) async {
-    final doc = await _firestore.collection('gallery').doc(galleryId).get();
+  // Future<GalleryModel> getGallery(String galleryId) async {
+  //   final doc = await _firestore.collection('gallery').doc(galleryId).get();
+  //   final gallery = GalleryModel.fromFirestore(doc);
+
+  //   // Fetch subcollections for the gallery
+  //   gallery.founders = await getFounders(galleryId);
+  //   gallery.events = await getEvents(galleryId);
+  //   gallery.shows = await getShows(galleryId);
+
+  //   return gallery;
+  // }
+
+  // /// Fetch all founders for a specific gallery
+  // Future<List<Founder>> getFounders(String galleryId) async {
+  //   final querySnapshot = await _firestore
+  //       .collection('gallery')
+  //       .doc(galleryId)
+  //       .collection('founders')
+  //       .get();
+
+  //   return querySnapshot.docs.map((doc) => Founder.fromFirestore(doc)).toList();
+  // }
+
+  // /// Fetch all events for a specific gallery
+  // Future<List<Event>> getEvents(String galleryId) async {
+  //   final querySnapshot = await _firestore
+  //       .collection('gallery')
+  //       .doc(galleryId)
+  //       .collection('events')
+  //       .get();
+
+  //   // Populate images for each event
+  //   final events = await Future.wait(querySnapshot.docs.map((doc) async {
+  //     Event event = Event.fromFirestore(doc);
+
+  //     // Fetch images for the event
+  //     final images = await getImages(galleryId, 'events', event.id);
+
+  //     // Return a new Event with updated images
+  //     return event.copyWith(images: images);
+  //   }));
+
+  //   return events;
+  // }
+
+  // /// Fetch all shows for a specific gallery
+  // Future<List<Show>> getShows(String galleryId) async {
+  //   final querySnapshot = await _firestore
+  //       .collection('gallery')
+  //       .doc(galleryId)
+  //       .collection('shows')
+  //       .get();
+
+  //   // Populate images for each show
+  //   final shows = await Future.wait(querySnapshot.docs.map((doc) async {
+  //     Show show = Show.fromFirestore(doc);
+
+  //     // Fetch images for the show
+  //     final images = await getImages(galleryId, 'shows', show.id);
+
+  //     // Return a new Show with updated images
+  //     return show.copyWith(images: images);
+  //   }));
+
+  //   return shows;
+  // }
+
+  // /// Fetch all images for a specific event or show
+  // Future<List<ImageModel>> getImages(
+  //     String galleryId, String subcollection, String documentId) async {
+  //   final querySnapshot = await _firestore
+  //       .collection('gallery')
+  //       .doc(galleryId)
+  //       .collection(subcollection)
+  //       .doc(documentId)
+  //       .collection('images')
+  //       .get();
+
+  //   return querySnapshot.docs
+  //       .map((doc) => ImageModel.fromFirestore(doc))
+  //       .toList();
+  // }
+
+  /// Fetch a single gallery document
+  Future<GalleryModel> getGallery() async {
+    // Fetch the 'all' document from the gallery collection
+    final doc = await _firestore.collection('gallery').doc('all').get();
     final gallery = GalleryModel.fromFirestore(doc);
 
     // Fetch subcollections for the gallery
-    gallery.founders = await getFounders(galleryId);
-    gallery.events = await getEvents(galleryId);
-    gallery.shows = await getShows(galleryId);
+    gallery.founders = await getFounders();
+    gallery.events = await getEvents();
+    gallery.shows = await getShows();
 
     return gallery;
   }
 
-  /// Fetch all founders for a specific gallery
-  Future<List<Founder>> getFounders(String galleryId) async {
+  /// Fetch all founders for the gallery
+  Future<List<Founder>> getFounders() async {
     final querySnapshot = await _firestore
         .collection('gallery')
-        .doc(galleryId)
+        .doc('all') // Use 'all' document
         .collection('founders')
         .get();
 
     return querySnapshot.docs.map((doc) => Founder.fromFirestore(doc)).toList();
   }
 
-  /// Fetch all events for a specific gallery
-  Future<List<Event>> getEvents(String galleryId) async {
+  /// Fetch all events for the gallery
+  Future<List<Event>> getEvents() async {
     final querySnapshot = await _firestore
         .collection('gallery')
-        .doc(galleryId)
+        .doc('all') // Use 'all' document
         .collection('events')
         .get();
 
@@ -262,7 +347,7 @@ class AppModel {
       Event event = Event.fromFirestore(doc);
 
       // Fetch images for the event
-      final images = await getImages(galleryId, 'events', event.id);
+      final images = await getImages('events', event.id);
 
       // Return a new Event with updated images
       return event.copyWith(images: images);
@@ -271,11 +356,11 @@ class AppModel {
     return events;
   }
 
-  /// Fetch all shows for a specific gallery
-  Future<List<Show>> getShows(String galleryId) async {
+  /// Fetch all shows for the gallery
+  Future<List<Show>> getShows() async {
     final querySnapshot = await _firestore
         .collection('gallery')
-        .doc(galleryId)
+        .doc('all') // Use 'all' document
         .collection('shows')
         .get();
 
@@ -284,7 +369,7 @@ class AppModel {
       Show show = Show.fromFirestore(doc);
 
       // Fetch images for the show
-      final images = await getImages(galleryId, 'shows', show.id);
+      final images = await getImages('shows', show.id);
 
       // Return a new Show with updated images
       return show.copyWith(images: images);
@@ -295,10 +380,10 @@ class AppModel {
 
   /// Fetch all images for a specific event or show
   Future<List<ImageModel>> getImages(
-      String galleryId, String subcollection, String documentId) async {
+      String subcollection, String documentId) async {
     final querySnapshot = await _firestore
         .collection('gallery')
-        .doc(galleryId)
+        .doc('all') // Use 'all' document
         .collection(subcollection)
         .doc(documentId)
         .collection('images')

@@ -491,35 +491,15 @@ class AppWidgets {
     );
   }
 
-  Widget buildAllGallery(
-      {String? imageUrl, String? title, String? date, VoidCallback? onTap}) {
-    return MasonryGridView.count(
-      padding: const EdgeInsets.all(16),
-      crossAxisCount: 2,
-      mainAxisSpacing: 16,
-      crossAxisSpacing: 16,
-      itemCount: 10,
-      itemBuilder: (context, index) {
-        return _buildGalleryItem(
-          imageUrl: imageUrl ?? 'assets/images/placeholder.png',
-          title: title ?? 'Fashion Week',
-          date: date ?? '',
-          height: index.isEven ? 280 : 200,
-          onTap: onTap ?? () {},
-        );
-      },
-    );
-  }
-
-  Widget _buildGalleryItem({
-    String? imageUrl,
-    String? title,
-    String? date,
+  static Widget buildGalleryItem({
+    required String? imageUrl,
+    required String? title,
+    required String? date,
     double? height,
-    VoidCallback? onTap,
+    required VoidCallback onTap,
   }) {
     return GestureDetector(
-      onTap: onTap!,
+      onTap: onTap,
       child: Container(
         height: height!,
         decoration: BoxDecoration(
@@ -537,10 +517,13 @@ class AppWidgets {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              Image.asset(
-                imageUrl!,
+              FadeInImage.assetNetwork(
+                placeholder: 'assets/images/placeholder.png',
+                image: imageUrl ?? 'assets/images/placeholder.png',
                 fit: BoxFit.cover,
-              ),
+                imageErrorBuilder: (context, error, stackTrace) =>
+                    const Icon(Icons.broken_image), // Fallback for broken image
+              ), // Default placeholder
               Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -548,7 +531,7 @@ class AppWidgets {
                     end: Alignment.bottomCenter,
                     colors: [
                       Colors.transparent,
-                      Colors.black.withAlpha(10),
+                      Colors.black.withAlpha(50),
                     ],
                   ),
                 ),
@@ -561,7 +544,7 @@ class AppWidgets {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      title!,
+                      title ?? 'Untitled', // Default title
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -569,9 +552,9 @@ class AppWidgets {
                       ),
                     ),
                     Text(
-                      date!,
+                      date ?? 'Unknown Date', // Default date
                       style: TextStyle(
-                        color: Colors.white.withAlpha(2),
+                        color: Colors.white.withAlpha(200),
                         fontSize: 12,
                       ),
                     ),
@@ -585,49 +568,7 @@ class AppWidgets {
     );
   }
 
-  Widget buildFoundingMembers(
-      {String? estDate,
-      String? name,
-      String? role,
-      String? imageUrl,
-      int? count}) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        // Founding Year Section
-        Text(
-          estDate ?? 'Established 2024',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF2D3436),
-          ),
-        ),
-        const SizedBox(height: 20),
-        // Founding Members Grid
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.8,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-          ),
-          itemCount: count ?? 6,
-          itemBuilder: (context, index) {
-            return _buildFounderCard(
-              name: name ?? 'FDAG',
-              role: role ?? '',
-              imageUrl: imageUrl ?? 'assets/images/placeholder.png',
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildFounderCard({
+  static Widget buildFounderCard({
     String? name,
     String? role,
     String? imageUrl,
@@ -653,9 +594,18 @@ class AppWidgets {
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(15),
                 ),
-                image: DecorationImage(
-                  image: AssetImage(imageUrl!),
+              ),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(15),
+                ),
+                child: FadeInImage.assetNetwork(
+                  placeholder:
+                      'assets/images/placeholder.png', // Your local placeholder image
+                  image: imageUrl!,
                   fit: BoxFit.cover,
+                  imageErrorBuilder: (context, error, stackTrace) => const Icon(
+                      Icons.broken_image), // Fallback when image fails
                 ),
               ),
             ),
@@ -687,27 +637,7 @@ class AppWidgets {
     );
   }
 
-  Widget buildEventsGallery(
-      {String? title,
-      String? date,
-      String? location,
-      String? imageUrl,
-      int? count}) {
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: count ?? 5,
-      itemBuilder: (context, index) {
-        return _buildEventCard(
-          title: title ?? 'FDAG',
-          date: date ?? '',
-          location: location ?? '',
-          imageUrl: imageUrl ?? 'assets/images/placeholder.png',
-        );
-      },
-    );
-  }
-
-  Widget _buildEventCard({
+  static Widget buildEventCard({
     String? title,
     String? date,
     String? location,
@@ -730,14 +660,23 @@ class AppWidgets {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: 200,
+            height: 200.0,
+            width: double.infinity,
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(15),
               ),
-              image: DecorationImage(
-                image: AssetImage(imageUrl!),
+            ),
+            child: ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(15),
+              ),
+              child: FadeInImage.assetNetwork(
+                placeholder: 'assets/images/placeholder.png',
+                image: imageUrl!,
                 fit: BoxFit.cover,
+                imageErrorBuilder: (context, error, stackTrace) =>
+                    const Icon(Icons.broken_image), // Fallback when image fails
               ),
             ),
           ),
@@ -793,28 +732,7 @@ class AppWidgets {
     );
   }
 
-  Widget buildFashionShows(
-      {int? count, String? title, String? year, String? imageUrl}) {
-    return GridView.builder(
-      padding: const EdgeInsets.all(16),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.8,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
-      ),
-      itemCount: count ?? 8,
-      itemBuilder: (context, index) {
-        return _buildFashionShowCard(
-          title: title ?? 'FDAG',
-          year: year ?? '',
-          imageUrl: imageUrl ?? 'assets/images/placeholder.png',
-        );
-      },
-    );
-  }
-
-  Widget _buildFashionShowCard({
+  static Widget buildFashionShowCard({
     String? title,
     String? year,
     String? imageUrl,
@@ -835,9 +753,12 @@ class AppWidgets {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Image.asset(
-              imageUrl!,
+            FadeInImage.assetNetwork(
+              placeholder: 'assets/images/placeholder.png',
+              image: imageUrl!,
               fit: BoxFit.cover,
+              imageErrorBuilder: (context, error, stackTrace) =>
+                  const Icon(Icons.broken_image), // Fallback when image fails
             ),
             Container(
               decoration: BoxDecoration(
@@ -869,7 +790,7 @@ class AppWidgets {
                   Text(
                     year!,
                     style: TextStyle(
-                      color: Colors.white.withAlpha(2),
+                      color: Colors.white.withAlpha(200),
                       fontSize: 14,
                     ),
                   ),

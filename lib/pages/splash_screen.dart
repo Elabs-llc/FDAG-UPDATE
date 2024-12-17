@@ -1,5 +1,6 @@
 import 'package:fdag/commons/colors/el_color.dart';
 import 'package:fdag/commons/colors/sizes.dart';
+import 'package:fdag/features/migrations/migration.dart';
 import 'package:fdag/pages/auth/login.dart';
 import 'package:fdag/pages/home.dart';
 import 'package:fdag/utils/logging/logger.dart';
@@ -33,6 +34,9 @@ class _SplashScreenState extends State<SplashScreen> {
     // Hide the system status bar for the splash screen.
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     _navigateToNext();
+
+    // do migration
+    // Migration.migrateGalleryStructure();
 
     // Set the logging level and log the splash screen completion.
     Logger.logLevel = 'INFO';
