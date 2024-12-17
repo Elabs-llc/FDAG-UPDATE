@@ -36,10 +36,15 @@ class _GalleryState extends ConsumerState<Gallery>
   void _startImageRotation() {
     _timer = Timer.periodic(Duration(seconds: 20), (timer) {
       setState(() {
-        // Check if bannerProvider is not empty before updating the index
+        // Safeguard: Get the list of images safely
         final bannerCount = ref.read(bannerProvider).length;
+
         if (bannerCount > 0) {
           currentImageIndex = (currentImageIndex + 1) % bannerCount;
+        } else {
+          // If no images, stop the timer to avoid unnecessary operations
+          timer.cancel();
+          currentImageIndex = 0; // Reset index for safety
         }
       });
     });
@@ -91,7 +96,10 @@ class _GalleryState extends ConsumerState<Gallery>
                   fit: StackFit.expand,
                   children: [
                     AnimatedSwitcher(
-                      duration: Duration(seconds: 1),
+                      duration: Duration(seconds: 10),
+                      transitionBuilder: (child, animation) {
+                        return FadeTransition(opacity: animation, child: child);
+                      },
                       child: bannerImages.isNotEmpty
                           ? Image.network(
                               bannerImages[currentImageIndex],
