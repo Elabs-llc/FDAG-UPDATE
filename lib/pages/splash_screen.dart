@@ -1,6 +1,5 @@
 import 'package:fdag/commons/colors/el_color.dart';
 import 'package:fdag/commons/colors/sizes.dart';
-import 'package:fdag/features/migrations/migration.dart';
 import 'package:fdag/pages/auth/login.dart';
 import 'package:fdag/pages/home.dart';
 import 'package:fdag/utils/logging/logger.dart';

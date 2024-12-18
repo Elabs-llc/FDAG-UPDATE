@@ -16,5 +16,6 @@ void main() async {
   ///
   /// This function initializes the app by calling `runApp()` and passing an instance
   /// of the `El` widget, which serves as the root of the application.
+  ///
   // runApp(const El());
 }

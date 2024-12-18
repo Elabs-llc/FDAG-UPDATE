@@ -12,7 +12,6 @@ import 'package:fdag/utils/helpers/text_helper.dart';
 import 'package:fdag/utils/logging/logger.dart';
 import 'package:fdag/utils/widgets/line.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class AppWidgets {
   AppModel appModel = AppModel();
