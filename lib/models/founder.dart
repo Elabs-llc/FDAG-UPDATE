@@ -2,15 +2,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Founder {
   final String id;
-  final String name;
+  final String title;
   final String bio;
-  final String image;
+  final String thumbnail;
+  final String role;
 
   Founder({
     required this.id,
-    required this.name,
+    required this.title,
     required this.bio,
-    required this.image,
+    required this.thumbnail,
+    required this.role,
   });
 
   // Factory method to create a Founder from Firestore document
@@ -18,9 +20,10 @@ class Founder {
     final data = doc.data()!;
     return Founder(
       id: doc.id,
-      name: data['name'] ?? '',
+      title: data['title'] ?? '',
       bio: data['bio'] ?? '',
-      image: data['image'] ?? '',
+      thumbnail: data['thumbnail'] ?? '',
+      role: data['role'] ?? '',
     );
   }
 }

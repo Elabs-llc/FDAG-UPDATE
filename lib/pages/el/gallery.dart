@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:fdag/commons/widgets/app_widgets.dart';
+import 'package:fdag/pages/screens/gallery_details_page.dart';
 import 'package:fdag/utils/providers/banner_notifier.dart';
 import 'package:fdag/utils/providers/gallery_notifier.dart';
 import 'package:flutter/material.dart';
@@ -34,19 +35,21 @@ class _GalleryState extends ConsumerState<Gallery>
   }
 
   void _startImageRotation() {
-    _timer = Timer.periodic(Duration(seconds: 20), (timer) {
-      setState(() {
-        // Safeguard: Get the list of images safely
-        final bannerCount = ref.read(bannerProvider).length;
+    _timer = Timer.periodic(Duration(seconds: 10), (timer) {
+      if (mounted) {
+        setState(() {
+          // Safeguard: Get the list of images safely
+          final bannerCount = ref.read(bannerProvider).length;
 
-        if (bannerCount > 0) {
-          currentImageIndex = (currentImageIndex + 1) % bannerCount;
-        } else {
-          // If no images, stop the timer to avoid unnecessary operations
-          timer.cancel();
-          currentImageIndex = 0; // Reset index for safety
-        }
-      });
+          if (bannerCount > 0) {
+            currentImageIndex = (currentImageIndex + 1) % bannerCount;
+          } else {
+            // If no images, stop the timer to avoid unnecessary operations
+            timer.cancel();
+            currentImageIndex = 0; // Reset index for safety
+          }
+        });
+      }
     });
   }
 
@@ -57,7 +60,7 @@ class _GalleryState extends ConsumerState<Gallery>
   }
 
   void _onTabChanged() {
-    if (_tabController.indexIsChanging || _tabController.index != null) {
+    if (_tabController.indexIsChanging) {
       _fetchGalleryForTab(_tabController.index);
     }
   }
@@ -90,18 +93,19 @@ class _GalleryState extends ConsumerState<Gallery>
               expandedHeight: 200,
               floating: false,
               pinned: true,
-              backgroundColor: const Color.fromARGB(55, 15, 14, 17),
+              backgroundColor: const Color.fromARGB(183, 15, 14, 17),
               flexibleSpace: FlexibleSpaceBar(
                 background: Stack(
                   fit: StackFit.expand,
                   children: [
                     AnimatedSwitcher(
-                      duration: Duration(seconds: 10),
+                      duration: Duration(seconds: 5),
                       transitionBuilder: (child, animation) {
                         return FadeTransition(opacity: animation, child: child);
                       },
                       child: bannerImages.isNotEmpty
                           ? Image.network(
+                              width: double.infinity,
                               bannerImages[currentImageIndex],
                               key: ValueKey<String>(bannerImages[
                                   currentImageIndex]), // Use image URL as key
@@ -120,9 +124,9 @@ class _GalleryState extends ConsumerState<Gallery>
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            Colors.transparent,
-                            const Color.fromARGB(255, 240, 236, 236)
-                                .withAlpha(2),
+                            const Color.fromARGB(150, 0, 0, 0), // Top opacity
+                            const Color.fromARGB(
+                                150, 0, 0, 0), // Bottom opacity
                           ],
                         ),
                       ),
@@ -213,6 +217,14 @@ class _GalleryState extends ConsumerState<Gallery>
                   height: index.isEven ? 280 : 200,
                   onTap: () {
                     // Add your image detail navigation logic here
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => GalleryDetailsPage(
+                          imageUrl: item['thumbnail'],
+                          title: item['title'],
+                        ),
+                      ),
+                    );
                   },
                 );
               },
