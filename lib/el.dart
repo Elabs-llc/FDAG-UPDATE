@@ -3,6 +3,7 @@ import 'package:fdag/pages/auth/signup.dart';
 import 'package:fdag/pages/home.dart';
 import 'package:fdag/pages/screens/all_event_page.dart';
 import 'package:fdag/pages/screens/by_laws_page.dart';
+import 'package:fdag/pages/screens/founding_members_page.dart';
 import 'package:fdag/pages/screens/mission_vision_page.dart';
 import 'package:fdag/pages/splash_screen.dart';
 import 'package:fdag/utils/theme/theme.dart';
@@ -38,6 +39,7 @@ class El extends StatelessWidget {
         '/allEvents': (contex) => AllEventPage(),
         '/byLaws': (contex) => BylawsPage(),
         '/missionVision': (context) => MissionVisionPage(),
+        '/founders': (context) => FoundingMembersPage(),
       },
     );
   }

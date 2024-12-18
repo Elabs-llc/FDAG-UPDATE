@@ -81,7 +81,7 @@ class HomeView extends ConsumerWidget {
                               fit: BoxFit.contain,
                             ),
                             action: () {
-                              Navigator.pushNamed(context, '/byLaws');
+                              Navigator.pushNamed(context, '/founders');
                             },
                           ),
                           AppWidgets().buildQuickLinkIcon(

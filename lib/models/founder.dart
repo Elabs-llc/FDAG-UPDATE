@@ -6,6 +6,7 @@ class Founder {
   final String bio;
   final String thumbnail;
   final String role;
+  final String specialty;
 
   Founder({
     required this.id,
@@ -13,6 +14,7 @@ class Founder {
     required this.bio,
     required this.thumbnail,
     required this.role,
+    required this.specialty,
   });
 
   // Factory method to create a Founder from Firestore document
@@ -24,6 +26,7 @@ class Founder {
       bio: data['bio'] ?? '',
       thumbnail: data['thumbnail'] ?? '',
       role: data['role'] ?? '',
+      specialty: data['specialty'] ?? '',
     );
   }
 }

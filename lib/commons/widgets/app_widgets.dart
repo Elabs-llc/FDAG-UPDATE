@@ -4,6 +4,7 @@ import 'package:fdag/commons/colors/sizes.dart';
 import 'package:fdag/elabs/auth/app_model.dart';
 import 'package:fdag/elabs/config.dart';
 import 'package:fdag/models/event_model.dart';
+import 'package:fdag/models/founder.dart';
 import 'package:fdag/models/poster_data.dart';
 import 'package:fdag/pages/screens/chairperson_screen.dart';
 import 'package:fdag/pages/screens/event_details_page.dart';
@@ -824,6 +825,131 @@ class AppWidgets {
           ),
         ),
       ),
+    );
+  }
+
+  static Widget buildFoundersCard(
+      {required Founder founder, Function? onTap, required bool isEven}) {
+    return GestureDetector(
+      onTap: () {
+        onTap!();
+      },
+      child: Container(
+        margin: EdgeInsets.only(top: isEven ? 30 : 0),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black,
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
+              child: FadeInImage.assetNetwork(
+                placeholder: 'assets/images/placeholder.png',
+                image: founder.thumbnail,
+                fit: BoxFit.cover,
+                imageErrorBuilder: (context, error, stackTrace) =>
+                    const Icon(Icons.broken_image), // Fallback for broken image
+              ),
+            ),
+            // Content
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    founder.title, // title was used to replace name
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    founder.role,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF6C5CE7),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      founder.specialty,
+                      style: const TextStyle(
+                        color: Color.fromARGB(255, 239, 239, 240),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.arrow_forward_rounded,
+                          color: Color(0xFF6C5CE7),
+                        ),
+                        onPressed: () {
+                          // Navigate to detailed profile
+                          onTap!();
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static Widget buildHistoryCard({String? title, String? content}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title ?? 'Historical Note',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF6C5CE7),
+          ),
+        ),
+        SizedBox(height: 16),
+        Text(
+          content!,
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.grey[700],
+            height: 1.6,
+          ),
+        ),
+      ],
     );
   }
 }
