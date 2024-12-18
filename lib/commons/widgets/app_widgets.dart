@@ -496,10 +496,13 @@ class AppWidgets {
     required String? title,
     required String? date,
     double? height,
-    required VoidCallback onTap,
+    required Function onTap,
   }) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        debugPrint('Gallery item tapped');
+        onTap(); // Trigger the provided onTap callback
+      },
       child: Container(
         height: height!,
         decoration: BoxDecoration(
@@ -572,24 +575,110 @@ class AppWidgets {
     String? name,
     String? role,
     String? imageUrl,
+    Function? onTap,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(50),
-            spreadRadius: 2,
-            blurRadius: 8,
-          ),
-        ],
+    return GestureDetector(
+      onTap: () {
+        debugPrint('Gallery item tapped');
+        onTap!(); // Trigger the provided onTap callback
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withAlpha(50),
+              spreadRadius: 2,
+              blurRadius: 8,
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(15),
+                  ),
+                ),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(15),
+                  ),
+                  child: FadeInImage.assetNetwork(
+                    placeholder:
+                        'assets/images/placeholder.png', // Your local placeholder image
+                    image: imageUrl!,
+                    fit: BoxFit.cover,
+                    imageErrorBuilder: (context, error, stackTrace) =>
+                        const Icon(
+                            Icons.broken_image), // Fallback when image fails
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name!,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    role!,
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Container(
+    );
+  }
+
+  static Widget buildEventCard({
+    String? title,
+    String? date,
+    String? location,
+    String? imageUrl,
+    Function? onTap,
+  }) {
+    return GestureDetector(
+      onTap: () {
+        debugPrint('Gallery item tapped');
+        onTap!(); // Trigger the provided onTap callback
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withAlpha(50),
+              spreadRadius: 2,
+              blurRadius: 8,
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 200.0,
+              width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(15),
@@ -600,8 +689,7 @@ class AppWidgets {
                   top: Radius.circular(15),
                 ),
                 child: FadeInImage.assetNetwork(
-                  placeholder:
-                      'assets/images/placeholder.png', // Your local placeholder image
+                  placeholder: 'assets/images/placeholder.png',
                   image: imageUrl!,
                   fit: BoxFit.cover,
                   imageErrorBuilder: (context, error, stackTrace) => const Icon(
@@ -609,125 +697,55 @@ class AppWidgets {
                 ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name!,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-                Text(
-                  role!,
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  static Widget buildEventCard({
-    String? title,
-    String? date,
-    String? location,
-    String? imageUrl,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(50),
-            spreadRadius: 2,
-            blurRadius: 8,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 200.0,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(15),
-              ),
-            ),
-            child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(15),
-              ),
-              child: FadeInImage.assetNetwork(
-                placeholder: 'assets/images/placeholder.png',
-                image: imageUrl!,
-                fit: BoxFit.cover,
-                imageErrorBuilder: (context, error, stackTrace) =>
-                    const Icon(Icons.broken_image), // Fallback when image fails
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title!,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.calendar_today,
-                      size: 16,
-                      color: Color(0xFF6C5CE7),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title!,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      date!,
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 14,
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.calendar_today,
+                        size: 16,
+                        color: Color(0xFF6C5CE7),
                       ),
-                    ),
-                    const SizedBox(width: 16),
-                    const Icon(
-                      Icons.location_on,
-                      size: 16,
-                      color: Color(0xFF6C5CE7),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      location!,
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 14,
+                      const SizedBox(width: 8),
+                      Text(
+                        date!,
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 14,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      const SizedBox(width: 16),
+                      const Icon(
+                        Icons.location_on,
+                        size: 16,
+                        color: Color(0xFF6C5CE7),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        location!,
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -736,68 +754,75 @@ class AppWidgets {
     String? title,
     String? year,
     String? imageUrl,
+    Function? onTap,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(5),
-            spreadRadius: 2,
-            blurRadius: 8,
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(15),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            FadeInImage.assetNetwork(
-              placeholder: 'assets/images/placeholder.png',
-              image: imageUrl!,
-              fit: BoxFit.cover,
-              imageErrorBuilder: (context, error, stackTrace) =>
-                  const Icon(Icons.broken_image), // Fallback when image fails
+    return GestureDetector(
+      onTap: () {
+        debugPrint('Gallery item tapped');
+        onTap!(); // Trigger the provided onTap callback
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withAlpha(5),
+              spreadRadius: 2,
+              blurRadius: 8,
             ),
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Colors.black.withAlpha(50),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              FadeInImage.assetNetwork(
+                placeholder: 'assets/images/placeholder.png',
+                image: imageUrl!,
+                fit: BoxFit.cover,
+                imageErrorBuilder: (context, error, stackTrace) =>
+                    const Icon(Icons.broken_image), // Fallback when image fails
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withAlpha(50),
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 12,
+                left: 12,
+                right: 12,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title!,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      year!,
+                      style: TextStyle(
+                        color: Colors.white.withAlpha(200),
+                        fontSize: 14,
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ),
-            Positioned(
-              bottom: 12,
-              left: 12,
-              right: 12,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title!,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    year!,
-                    style: TextStyle(
-                      color: Colors.white.withAlpha(200),
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

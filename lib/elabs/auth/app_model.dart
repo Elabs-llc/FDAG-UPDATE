@@ -383,11 +383,20 @@ class AppModel {
       String subcollection, String documentId) async {
     final querySnapshot = await _firestore
         .collection('gallery')
-        .doc('all') // Use 'all' document
+        .doc('all')
         .collection(subcollection)
         .doc(documentId)
         .collection('images')
         .get();
+
+    // Debugging the fetched
+    debugPrint('Document Sub Collection received: $subcollection');
+    debugPrint('Document ID received: $documentId');
+    debugPrint('Number of images fetched: ${querySnapshot.docs.length}');
+    for (var doc in querySnapshot.docs) {
+      final data = doc.data();
+      debugPrint('Fetched image data: $data');
+    }
 
     return querySnapshot.docs
         .map((doc) => ImageModel.fromFirestore(doc))

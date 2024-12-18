@@ -65,13 +65,19 @@ class GalleryNotifier extends StateNotifier<List<Map<String, dynamic>>> {
   Map<String, dynamic> _processDocData(QueryDocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return {
+      'subcollection':
+          data['subcollection'] ?? '', // Provide default subcollection
       'thumbnail': data['thumbnail'] ?? '', // Provide default thumbnail
       'title': data['title'] ?? 'Untitled', // Provide default title
       'date': data['date'] ?? 'Unknown Date', // Provide default date
       'role': data['role'] ?? 'Untitled', // Provide default role
       'location':
           data['location'] ?? 'Unknown Location', // Provide default location
-      'year': data['year'] ?? 'Unknown Year', // Provide default location
+      'year': data['year'] ?? 'Unknown Year', // Provide default year
+      'id': data['id'] ?? 'Unknown ID', // Provide default ID
+      'bio': data['bio'] ?? 'Unknown Bio', // Provide default ID
+      'description':
+          data['description'] ?? 'Unknown Description', // Provide default ID
     };
   }
 }

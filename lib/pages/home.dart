@@ -49,18 +49,18 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: ElColor.darkBlue,
-        focusColor: ElColor.darkBlue,
-        hoverColor: ElColor.darkBlue,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
-        onPressed: () {},
-        child: const Icon(
-          Icons.add,
-          color: ElColor.textWhite,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: ElColor.darkBlue,
+      //   focusColor: ElColor.darkBlue,
+      //   hoverColor: ElColor.darkBlue,
+      //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
+      //   onPressed: () {},
+      //   child: const Icon(
+      //     Icons.add,
+      //     color: ElColor.textWhite,
+      //   ),
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         height: 70, // Increased height to fit titles

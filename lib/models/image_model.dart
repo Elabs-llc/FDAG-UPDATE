@@ -20,7 +20,9 @@ class ImageModel {
       id: doc.id,
       url: data['url'] ?? '',
       caption: data['caption'] ?? '',
-      uploadedAt: (data['uploadedAt'] as Timestamp).toDate(),
+      uploadedAt: (data['uploadedAt'] is Timestamp)
+          ? (data['uploadedAt'] as Timestamp).toDate()
+          : DateTime.now(),
     );
   }
 }

@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:fdag/commons/widgets/app_widgets.dart';
+import 'package:fdag/elabs/auth/app_model.dart';
 import 'package:fdag/pages/screens/gallery_details_page.dart';
+import 'package:fdag/utils/helpers/ui_helper.dart';
 import 'package:fdag/utils/providers/banner_notifier.dart';
 import 'package:fdag/utils/providers/gallery_notifier.dart';
 import 'package:flutter/material.dart';
@@ -184,11 +186,11 @@ class _GalleryState extends ConsumerState<Gallery>
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF6C5CE7),
-        onPressed: _showFilterBottomSheet,
-        child: Icon(Icons.filter_list),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: const Color(0xFF6C5CE7),
+      //   onPressed: _showFilterBottomSheet,
+      //   child: Icon(Icons.filter_list),
+      // ),
     );
   }
 
@@ -211,22 +213,59 @@ class _GalleryState extends ConsumerState<Gallery>
               itemBuilder: (context, index) {
                 final item = data[index];
                 return AppWidgets.buildGalleryItem(
-                  imageUrl: item['thumbnail'],
-                  title: item['title'],
-                  date: item['date'],
-                  height: index.isEven ? 280 : 200,
-                  onTap: () {
-                    // Add your image detail navigation logic here
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => GalleryDetailsPage(
-                          imageUrl: item['thumbnail'],
-                          title: item['title'],
-                        ),
-                      ),
-                    );
-                  },
-                );
+                    imageUrl: item['thumbnail'],
+                    title: item['title'],
+                    date: item['date'],
+                    height: index.isEven ? 280 : 200,
+                    onTap: () async {
+                      debugPrint('onTap triggered');
+                      debugPrint('Item: $item');
+                      try {
+                        // Fetch images for the specific document (gallery item)
+                        final images = await AppModel().getImages(
+                            item['subcollection'],
+                            item[
+                                'id']); // pass subcollection in data instead of category
+
+                        debugPrint(
+                            'Document Sub Collection passed: ${item['subcollection']}');
+                        debugPrint('Document ID passed: ${item['id']}');
+
+                        // Convert ImageModel to a list of
+                        List<String> imageUrls = [];
+                        if (item['subcollection'].toLowerCase() == 'founders') {
+                          // Wrap the thumbnail URL in a list
+                          imageUrls = [item['thumbnail']];
+                        } else {
+                          imageUrls = images.map((img) => img.url).toList();
+                        }
+
+                        debugPrint('Fetched ${imageUrls.length} images');
+                        debugPrint('First image URL: $imageUrls');
+                        debugPrint(
+                            'Navigating to GalleryDetailsPage with images: $images');
+
+                        // Navigate to the GalleryDetailsPage with the fetched images
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => GalleryDetailsPage(
+                              images: imageUrls,
+                              title: item['title'],
+                              date: item['date'],
+                              description: item['description'],
+                              category: category,
+                            ),
+                          ),
+                        );
+                      } catch (e) {
+                        // Handle errors (e.g., network issues, Firestore errors)
+                        UiHelper.showSnackBar(
+                          context,
+                          'Failed to load images: $e',
+                          type: SnackBarType.error,
+                        );
+                      }
+                    });
               },
             ),
     );
@@ -271,11 +310,55 @@ class _GalleryState extends ConsumerState<Gallery>
                     final item = data[index];
 
                     return AppWidgets.buildFounderCard(
-                      name: item['title'] ?? 'FDAG',
-                      role: item['role'] ?? 'NA',
-                      imageUrl:
-                          item['thumbnail'] ?? 'assets/images/placeholder.png',
-                    );
+                        name: item['title'] ?? 'FDAG',
+                        role: item['role'] ?? 'NA',
+                        imageUrl: item['thumbnail'] ??
+                            'assets/images/placeholder.png',
+                        onTap: () async {
+                          debugPrint('onTap triggered');
+                          debugPrint('Item: $item');
+                          try {
+                            // Fetch images for the specific document (gallery item)
+                            final images = await AppModel().getImages(
+                                item['subcollection'],
+                                item[
+                                    'id']); // pass subcollection in data instead of category
+
+                            debugPrint(
+                                'Document Sub Collection passed: ${item['subcollection']}');
+                            debugPrint('Document ID passed: ${item['id']}');
+
+                            // Convert ImageModel to a list of
+                            List<String> imageUrls = [
+                              item['thumbnail'].toLowerCase()
+                            ];
+
+                            debugPrint('Fetched ${imageUrls.length} images');
+                            debugPrint('First image URL: $imageUrls');
+                            debugPrint(
+                                'Navigating to GalleryDetailsPage with images: $images');
+
+                            // Navigate to the GalleryDetailsPage with the fetched images
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => GalleryDetailsPage(
+                                  images: imageUrls,
+                                  title: '${item['title']} - ${item['role']}',
+                                  date: item['date'],
+                                  description: item['bio'],
+                                  category: category,
+                                ),
+                              ),
+                            );
+                          } catch (e) {
+                            // Handle errors (e.g., network issues, Firestore errors)
+                            UiHelper.showSnackBar(
+                              context,
+                              'Failed to load images: $e',
+                              type: SnackBarType.error,
+                            );
+                          }
+                        });
                   },
                 ),
               ],
@@ -303,6 +386,50 @@ class _GalleryState extends ConsumerState<Gallery>
                   date: item['date'],
                   location: item['location'],
                   imageUrl: item['thumbnail'],
+                  onTap: () async {
+                    debugPrint('onTap triggered');
+                    debugPrint('Item: $item');
+                    try {
+                      // Fetch images for the specific document (gallery item)
+                      final images = await AppModel().getImages(
+                          item['subcollection'],
+                          item[
+                              'id']); // pass subcollection in data instead of category
+
+                      debugPrint(
+                          'Document Sub Collection passed: ${item['subcollection']}');
+                      debugPrint('Document ID passed: ${item['id']}');
+
+                      // Convert ImageModel to a list of
+                      List<String> imageUrls =
+                          images.map((img) => img.url).toList();
+
+                      debugPrint('Fetched ${imageUrls.length} images');
+                      debugPrint('First image URL: $imageUrls');
+                      debugPrint(
+                          'Navigating to GalleryDetailsPage with images: $images');
+
+                      // Navigate to the GalleryDetailsPage with the fetched images
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => GalleryDetailsPage(
+                            images: imageUrls,
+                            title: '${item['title']}',
+                            date: item['date'],
+                            description: item['description'],
+                            category: category,
+                          ),
+                        ),
+                      );
+                    } catch (e) {
+                      // Handle errors (e.g., network issues, Firestore errors)
+                      UiHelper.showSnackBar(
+                        context,
+                        'Failed to load images: $e',
+                        type: SnackBarType.error,
+                      );
+                    }
+                  },
                 );
               },
             ),
@@ -334,46 +461,90 @@ class _GalleryState extends ConsumerState<Gallery>
                   title: item['title'],
                   year: item['year'],
                   imageUrl: item['thumbnail'],
+                  onTap: () async {
+                    debugPrint('onTap triggered');
+                    debugPrint('Item: $item');
+                    try {
+                      // Fetch images for the specific document (gallery item)
+                      final images = await AppModel().getImages(
+                          item['subcollection'],
+                          item[
+                              'id']); // pass subcollection in data instead of category
+
+                      debugPrint(
+                          'Document Sub Collection passed: ${item['subcollection']}');
+                      debugPrint('Document ID passed: ${item['id']}');
+
+                      // Convert ImageModel to a list of
+                      List<String> imageUrls =
+                          images.map((img) => img.url).toList();
+
+                      debugPrint('Fetched ${imageUrls.length} images');
+                      debugPrint('First image URL: $imageUrls');
+                      debugPrint(
+                          'Navigating to GalleryDetailsPage with images: $images');
+
+                      // Navigate to the GalleryDetailsPage with the fetched images
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => GalleryDetailsPage(
+                            images: imageUrls,
+                            title: '${item['title']}',
+                            date: item['date'],
+                            description: item['description'],
+                            category: category,
+                          ),
+                        ),
+                      );
+                    } catch (e) {
+                      // Handle errors (e.g., network issues, Firestore errors)
+                      UiHelper.showSnackBar(
+                        context,
+                        'Failed to load images: $e',
+                        type: SnackBarType.error,
+                      );
+                    }
+                  },
                 );
               },
             ),
     );
   }
 
-  void _showFilterBottomSheet() {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Filter Gallery',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 20),
-              // Add your filter options here
-            ],
-          ),
-        );
-      },
-    );
-  }
+  // void _showFilterBottomSheet() {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     shape: const RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+  //     ),
+  //     builder: (context) {
+  //       return Container(
+  //         padding: const EdgeInsets.all(20),
+  //         child: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             Container(
+  //               width: 40,
+  //               height: 4,
+  //               decoration: BoxDecoration(
+  //                 color: Colors.grey[300],
+  //                 borderRadius: BorderRadius.circular(2),
+  //               ),
+  //             ),
+  //             const SizedBox(height: 20),
+  //             const Text(
+  //               'Filter Gallery',
+  //               style: TextStyle(
+  //                 fontSize: 20,
+  //                 fontWeight: FontWeight.bold,
+  //               ),
+  //             ),
+  //             const SizedBox(height: 20),
+  //             // Add your filter options here
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 }
