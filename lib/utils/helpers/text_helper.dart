@@ -64,4 +64,19 @@ class TextHelper {
       return 'Invalid date';
     }
   }
+
+  static String getYear(String inputDate) {
+    try {
+      // Parse the input date in "DD/MM/YYYY" format
+      DateTime dateTime = DateFormat('dd/MM/yyyy').parse(inputDate);
+
+      // Extract the year from the date
+      String year = DateFormat('yyyy').format(dateTime);
+
+      return year;
+    } catch (e) {
+      // Handle errors if the input date is invalid
+      return 'Invalid date';
+    }
+  }
 }

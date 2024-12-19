@@ -2,6 +2,7 @@ import 'package:fdag/commons/widgets/app_widgets.dart';
 import 'package:fdag/elabs/auth/app_model.dart';
 import 'package:fdag/models/founder.dart';
 import 'package:fdag/pages/screens/gallery_details_page.dart';
+import 'package:fdag/utils/helpers/text_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
@@ -17,6 +18,17 @@ class FoundingMembersPage extends StatelessWidget {
           SliverAppBar(
             expandedHeight: 300,
             pinned: true,
+            leading: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CircleAvatar(
+                backgroundColor: const Color.fromARGB(33, 255, 255, 255),
+                child: IconButton(
+                  icon:
+                      const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ),
+            ),
             backgroundColor: const Color(0xFF6C5CE7),
             flexibleSpace: FlexibleSpaceBar(
               background: Stack(
@@ -73,13 +85,17 @@ class FoundingMembersPage extends StatelessWidget {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: const Text(
-                            'Est. 1995',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                            ),
-                          ),
+                          child: AppWidgets.buildCompanyInfo(child: (contents) {
+                            final data = contents.isNotEmpty ? contents[0] : {};
+                            return Text(
+                              'EST ${TextHelper.getYear(data['estDate'])}',
+                              style: const TextStyle(
+                                color: Color(0xFF6C5CE7),
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            );
+                          }),
                         ),
                         const SizedBox(height: 12),
                         const Text(
@@ -91,13 +107,17 @@ class FoundingMembersPage extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text(
-                          'Fashion Design Association of Ghana',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                        ),
+                        AppWidgets.buildCompanyInfo(child: (contents) {
+                          final data = contents.isNotEmpty ? contents[0] : {};
+                          return Text(
+                            data['name'] ??
+                                'Fashion Design Association of Ghana',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          );
+                        }),
                       ],
                     ),
                   ),
@@ -118,16 +138,19 @@ class FoundingMembersPage extends StatelessWidget {
                     color: Color(0xFF6C5CE7),
                   ),
                   const SizedBox(height: 16),
-                  Text(
-                    'Building the foundation of Ghanaian fashion excellence',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.grey[800],
-                      fontStyle: FontStyle.italic,
-                      height: 1.5,
-                    ),
-                  ),
+                  AppWidgets.buildCompanyInfo(child: (contents) {
+                    final data = contents.isNotEmpty ? contents[0] : {};
+                    return Text(
+                      data['slogan'] ?? 'No legacy is so rich as honesty.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.grey[800],
+                        fontStyle: FontStyle.italic,
+                        height: 1.5,
+                      ),
+                    );
+                  }),
                 ],
               ),
             ),
@@ -202,9 +225,13 @@ class FoundingMembersPage extends StatelessWidget {
                   color: const Color(0xFF6C5CE7),
                 ),
               ),
-              child: AppWidgets.buildHistoryCard(
+              child: AppWidgets.buildCompanyInfo(child: (contents) {
+                final data = contents.isNotEmpty ? contents[0] : {};
+                return AppWidgets.buildHistoryCard(
                   content:
-                      'The Fashion Design Association of Ghana was established in 1995 by a group of visionary fashion designers who saw the need to unite and elevate Ghanaian fashion design. Their collective vision has shaped the industry and continues to inspire new generations.'),
+                      data['historicalNote'] ?? 'No historical note available.',
+                );
+              }),
             ),
           ),
 

@@ -952,4 +952,27 @@ class AppWidgets {
       ],
     );
   }
+
+  static Widget buildCompanyInfo(
+      {required Widget Function(List<Map<String, dynamic>>) child}) {
+    return FutureBuilder<Map<String, dynamic>?>(
+      future: AppModel().fetchCompanyInfo(),
+      builder: (BuildContext context,
+          AsyncSnapshot<Map<String, dynamic>?> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error fetching chairperson message.'));
+        } else if (snapshot.hasData && snapshot.data != null) {
+          final data = snapshot.data!;
+          List<Map<String, dynamic>> contents = [data];
+          return child(contents); // Pass the contents to the child function
+        } else {
+          return Center(
+            child: Text('No data available.'),
+          );
+        }
+      },
+    );
+  }
 }

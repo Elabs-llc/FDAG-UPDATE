@@ -402,4 +402,16 @@ class AppModel {
         .map((doc) => ImageModel.fromFirestore(doc))
         .toList();
   }
+
+  /// Fetch Welcome messages
+  Future<Map<String, dynamic>?> fetchCompanyInfo() async {
+    try {
+      DocumentSnapshot documentSnapshot =
+          await _firestore.collection('company').doc('brand').get();
+      return documentSnapshot.data() as Map<String, dynamic>;
+    } catch (e) {
+      Logger.error('Error fetching company info: $e');
+      return null;
+    }
+  }
 }
