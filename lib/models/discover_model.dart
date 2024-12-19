@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fdag/models/image_model.dart';
+import 'package:flutter/material.dart';
 
 class DiscoverModel {
   final String id;
@@ -9,7 +10,8 @@ class DiscoverModel {
   final String designer;
   final String speciality;
   final String category;
-  final DateTime date;
+  final String subcollection;
+  final DateTime? date;
   final List<ImageModel> images;
 
   DiscoverModel({
@@ -20,7 +22,8 @@ class DiscoverModel {
     required this.designer,
     required this.speciality,
     required this.category,
-    required this.date,
+    required this.subcollection,
+    this.date,
     required this.images,
   });
 
@@ -28,6 +31,20 @@ class DiscoverModel {
   factory DiscoverModel.fromFirestore(
       DocumentSnapshot<Map<String, dynamic>> doc) {
     final data = doc.data()!;
+    String dateString = data['date'] ?? ''; // Ensure the field exists
+    DateTime? parsedDate;
+
+    if (dateString.isNotEmpty) {
+      // Parse the date string into a DateTime object
+      final dateParts = dateString.split('/');
+      if (dateParts.length == 3) {
+        parsedDate = DateTime(
+          int.parse(dateParts[2]), // Year
+          int.parse(dateParts[1]), // Month
+          int.parse(dateParts[0]), // Day
+        );
+      }
+    }
     return DiscoverModel(
       id: doc.id,
       title: data['title'] ?? '',
@@ -36,12 +53,28 @@ class DiscoverModel {
       designer: data['designer'] ?? '',
       speciality: data['speciality'] ?? '',
       category: data['category'] ?? '',
-      date: (data['date'] as Timestamp).toDate(),
+      subcollection: data['subcollection'] ?? '',
+      date: parsedDate,
       images: [], // Populate later from subcollection
     );
   }
 
   factory DiscoverModel.fromDoc(DocumentSnapshot<Map<String, dynamic>> doc) {
+    debugPrint('DiscoverModel.fromDoc: $doc');
+    String dateString = doc['date'] ?? ''; // Ensure the field exists
+    DateTime? parsedDate;
+
+    if (dateString.isNotEmpty) {
+      // Parse the date string into a DateTime object
+      final dateParts = dateString.split('/');
+      if (dateParts.length == 3) {
+        parsedDate = DateTime(
+          int.parse(dateParts[2]), // Year
+          int.parse(dateParts[1]), // Month
+          int.parse(dateParts[0]), // Day
+        );
+      }
+    }
     return DiscoverModel(
       id: doc.id,
       title: doc['title'] ?? '',
@@ -50,7 +83,8 @@ class DiscoverModel {
       designer: doc['designer'] ?? '',
       speciality: doc['speciality'] ?? '',
       category: doc['category'] ?? '',
-      date: (doc['date'] as Timestamp).toDate(),
+      subcollection: doc['subcollection'] ?? '',
+      date: parsedDate, // (doc['date'] as Timestamp).toDate(),
       images: [], // Populate later from subcollection
     );
   }
@@ -67,6 +101,7 @@ class DiscoverModel {
       designer: designer,
       speciality: speciality,
       category: category,
+      subcollection: subcollection,
       date: date,
       images: images ?? this.images,
     );

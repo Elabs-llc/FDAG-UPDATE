@@ -7,6 +7,9 @@ import 'package:fdag/models/gallery_model.dart';
 import 'package:fdag/models/image_model.dart';
 import 'package:fdag/models/show.dart';
 import 'package:fdag/models/spotlight_model.dart';
+import 'package:fdag/pages/screens/gallery_details_page.dart';
+import 'package:fdag/utils/helpers/text_helper.dart';
+import 'package:fdag/utils/helpers/ui_helper.dart';
 import 'package:fdag/utils/logging/logger.dart';
 import 'package:flutter/material.dart';
 
@@ -451,11 +454,13 @@ class AppModel {
           .snapshots()
           .map(
             (querySnapshot) => querySnapshot.docs.map((doc) {
+              debugPrint('Document ID: ${doc.id}');
               return DiscoverModel.fromDoc(doc); // Pass the entire document
             }).toList(),
           );
     } catch (e) {
       Logger.error('Error fetching collections: $e');
+      debugPrint('Error fetching collections: $e');
       return Stream.value([]);
     }
   }
@@ -495,6 +500,41 @@ class AppModel {
     } catch (e) {
       Logger.error('Error fetching innovations: $e');
       return Stream.value([]);
+    }
+  }
+
+  Future<void> handleDiscoverTap(
+      BuildContext context, DiscoverModel collection) async {
+    try {
+      // Fetch images for the specific document (gallery item)
+      final images = await getDiscoverImages(
+        collection.subcollection,
+        collection.id,
+      );
+
+      // Convert ImageModel to a list of URLs
+      List<String> imageUrls = images.map((img) => img.url).toList();
+
+      // Navigate to the GalleryDetailsPage with the fetched images
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => GalleryDetailsPage(
+            images: imageUrls,
+            title: collection.title,
+            date: TextHelper.formatDate(
+                TextHelper.formatDateTime(collection.date)),
+            description: collection.description,
+            category: collection.category,
+          ),
+        ),
+      );
+    } catch (e) {
+      // Handle errors (e.g., network issues, Firestore errors)
+      UiHelper.showSnackBar(
+        context,
+        'Failed to load images: $e',
+        type: SnackBarType.error,
+      );
     }
   }
 }

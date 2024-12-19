@@ -3,6 +3,7 @@ import 'package:fdag/commons/colors/el_color.dart';
 import 'package:fdag/commons/colors/sizes.dart';
 import 'package:fdag/elabs/auth/app_model.dart';
 import 'package:fdag/elabs/config.dart';
+import 'package:fdag/features/search/search_page.dart';
 import 'package:fdag/models/event_model.dart';
 import 'package:fdag/models/founder.dart';
 import 'package:fdag/models/poster_data.dart';
@@ -1024,7 +1025,9 @@ class AppWidgets {
     Function? onTap,
   }) {
     return GestureDetector(
-      onTap: onTap!(),
+      onTap: onTap != null
+          ? () => onTap() // Safely invoke onTap if not null
+          : null,
       child: Container(
         width: 180,
         margin: const EdgeInsets.only(right: 16),
@@ -1045,11 +1048,14 @@ class AppWidgets {
             ClipRRect(
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(15)),
-              child: Image.asset(
-                imageUrl,
-                height: 140,
+              child: FadeInImage.assetNetwork(
+                placeholder: 'assets/images/placeholder.png',
+                image: imageUrl,
+                height: 200,
                 width: double.infinity,
                 fit: BoxFit.cover,
+                imageErrorBuilder: (context, error, stackTrace) =>
+                    const Icon(Icons.broken_image), // Fallback for broken image
               ),
             ),
             Padding(
@@ -1087,7 +1093,9 @@ class AppWidgets {
     Function? onTap,
   }) {
     return GestureDetector(
-      onTap: onTap!(),
+      onTap: onTap != null
+          ? () => onTap() // Safely invoke onTap if not null
+          : null,
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -1106,11 +1114,14 @@ class AppWidgets {
             ClipRRect(
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(15)),
-              child: Image.asset(
-                imageUrl,
+              child: FadeInImage.assetNetwork(
+                placeholder: 'assets/images/placeholder.png',
+                image: imageUrl,
                 height: 100,
                 width: double.infinity,
                 fit: BoxFit.cover,
+                imageErrorBuilder: (context, error, stackTrace) =>
+                    const Icon(Icons.broken_image), // Fallback for broken image
               ),
             ),
             Padding(
@@ -1148,7 +1159,9 @@ class AppWidgets {
     Function? onTap,
   }) {
     return GestureDetector(
-      onTap: onTap!(),
+      onTap: onTap != null
+          ? () => onTap() // Safely invoke onTap if not null
+          : null,
       child: Container(
         width: 150,
         margin: const EdgeInsets.only(right: 16),
@@ -1169,11 +1182,14 @@ class AppWidgets {
             ClipRRect(
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(15)),
-              child: Image.asset(
-                imageUrl,
+              child: FadeInImage.assetNetwork(
+                placeholder: 'assets/images/placeholder.png',
+                image: imageUrl,
                 height: 120,
                 width: double.infinity,
                 fit: BoxFit.cover,
+                imageErrorBuilder: (context, error, stackTrace) =>
+                    const Icon(Icons.broken_image), // Fallback for broken image
               ),
             ),
             Padding(
@@ -1199,6 +1215,301 @@ class AppWidgets {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  static Widget buildDiscoverEventCard({
+    required String title,
+    required String date,
+    required String location,
+    Function? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap != null ? () => onTap() : null,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: IntrinsicWidth(
+          // Wrap Row with IntrinsicWidth for bounded width
+          child: Row(
+            mainAxisSize:
+                MainAxisSize.min, // Prevent Row from expanding infinitely
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF6C5CE7),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(
+                  Icons.event,
+                  color: Colors.white, // Fix icon color for visibility
+                ),
+              ),
+              const SizedBox(width: 16),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min, // Avoid infinite height
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.calendar_today,
+                        size: 14,
+                        color: Colors.grey[600],
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        date,
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 12,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Icon(
+                        Icons.location_on,
+                        size: 14,
+                        color: Colors.grey[600],
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        location,
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 12,
+                        ),
+                        overflow: TextOverflow.ellipsis, // Handle long text
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+// Community card will be implemented on next update
+  static Widget buildCommunityCard({
+    required String title,
+    required String members,
+    required String imageUrl,
+  }) {
+    return Container(
+      width: 200,
+      margin: const EdgeInsets.only(right: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black,
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          // Background Image
+          ClipRRect(
+            borderRadius: BorderRadius.circular(15),
+            child: Image.asset(
+              imageUrl,
+              height: 200,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+          ),
+          // Gradient Overlay
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.transparent,
+                  Colors.black,
+                ],
+              ),
+            ),
+          ),
+          // Content
+          Positioned(
+            bottom: 12,
+            left: 12,
+            right: 12,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.people,
+                      size: 14,
+                      color: Colors.white,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      members,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Build Discover AppBar
+  static PreferredSize buildDiscoverAppBar(BuildContext context) {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(110),
+      child: SafeArea(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Color(0x0D000000),
+                blurRadius: 8,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Discover',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF333333),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 40,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF5F5F5),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              // Implement search functionality
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => SearchPage(),
+                                ),
+                              );
+                            },
+                            child: const Icon(
+                              Icons.search,
+                              color: Color(0xFF9E9E9E),
+                              size: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {
+                                // Implement search functionality
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => SearchPage(),
+                                  ),
+                                );
+                              },
+                              child: TextField(
+                                readOnly: true,
+                                decoration: const InputDecoration(
+                                  hintText: 'Search designers, styles...',
+                                  hintStyle: TextStyle(
+                                    color: Color(0xFF9E9E9E),
+                                    fontSize: 14,
+                                  ),
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.zero,
+                                  isDense: true,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF6C5CE7),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.tune,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

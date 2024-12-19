@@ -79,4 +79,11 @@ class TextHelper {
       return 'Invalid date';
     }
   }
+
+  static String formatDateTime(DateTime? date) {
+    if (date == null) {
+      return 'N/A'; // Default value for null dates
+    }
+    return DateFormat('dd/MM/yyyy').format(date); // Format as DD/MM/YYYY
+  }
 }
