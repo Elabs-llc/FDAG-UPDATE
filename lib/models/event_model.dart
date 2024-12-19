@@ -1,6 +1,6 @@
 import 'package:fdag/models/poster_data.dart';
 
-/// A model class representing an event with various attributes.
+/// A model class representing an event with various attributes.v A
 class EventModel implements PosterData {
   /// Unique identifier for the event.
   final String id;

@@ -5,7 +5,7 @@ import 'package:fdag/elabs/config.dart';
 import 'package:fdag/pages/el/by_laws.dart';
 import 'package:fdag/pages/el/gallery.dart';
 import 'package:fdag/pages/el/home_view.dart';
-import 'package:fdag/pages/el/mv.dart';
+import 'package:fdag/pages/el/discover_page.dart';
 import 'package:fdag/utils/logging/logger.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -106,7 +106,7 @@ class _HomeState extends State<Home> {
           children: [
             HomeView(),
             Gallery(),
-            Mv(),
+            DiscoverPage(),
             ByLaws(),
           ],
         ),

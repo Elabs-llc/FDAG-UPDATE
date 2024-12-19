@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fdag/models/discover_model.dart';
 import 'package:fdag/models/event.dart';
 import 'package:fdag/models/event_model.dart';
 import 'package:fdag/models/founder.dart';
@@ -412,6 +413,88 @@ class AppModel {
     } catch (e) {
       Logger.error('Error fetching company info: $e');
       return null;
+    }
+  }
+
+  /// Fetch all images for a specific discover types
+  Future<List<ImageModel>> getDiscoverImages(
+      String subcollection, String documentId) async {
+    final querySnapshot = await _firestore
+        .collection('posts')
+        .doc('all')
+        .collection(subcollection)
+        .doc(documentId)
+        .collection('images')
+        .get();
+
+    // Debugging the fetched
+    debugPrint('Document Sub Collection received: $subcollection');
+    debugPrint('Document ID received: $documentId');
+    debugPrint('Number of images fetched: ${querySnapshot.docs.length}');
+    for (var doc in querySnapshot.docs) {
+      final data = doc.data();
+      debugPrint('Fetched image data: $data');
+    }
+
+    return querySnapshot.docs
+        .map((doc) => ImageModel.fromFirestore(doc))
+        .toList();
+  }
+
+  /// Fetching recents collections of the association as a real-time stream
+  Stream<List<DiscoverModel>> fetchCollections() {
+    try {
+      return _firestore
+          .collection('posts')
+          .doc('all')
+          .collection('collections')
+          .snapshots()
+          .map(
+            (querySnapshot) => querySnapshot.docs.map((doc) {
+              return DiscoverModel.fromDoc(doc); // Pass the entire document
+            }).toList(),
+          );
+    } catch (e) {
+      Logger.error('Error fetching collections: $e');
+      return Stream.value([]);
+    }
+  }
+
+  /// Fetching recents designers of the association as a real-time stream
+  Stream<List<DiscoverModel>> fetchDesigners() {
+    try {
+      return _firestore
+          .collection('posts')
+          .doc('all')
+          .collection('designers')
+          .snapshots()
+          .map(
+            (querySnapshot) => querySnapshot.docs.map((doc) {
+              return DiscoverModel.fromDoc(doc); // Pass the entire document
+            }).toList(),
+          );
+    } catch (e) {
+      Logger.error('Error fetching designers: $e');
+      return Stream.value([]);
+    }
+  }
+
+  /// Fetching recents innovations of the association as a real-time stream
+  Stream<List<DiscoverModel>> fetchInnovations() {
+    try {
+      return _firestore
+          .collection('posts')
+          .doc('all')
+          .collection('innovations')
+          .snapshots()
+          .map(
+            (querySnapshot) => querySnapshot.docs.map((doc) {
+              return DiscoverModel.fromDoc(doc); // Pass the entire document
+            }).toList(),
+          );
+    } catch (e) {
+      Logger.error('Error fetching innovations: $e');
+      return Stream.value([]);
     }
   }
 }
