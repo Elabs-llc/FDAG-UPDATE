@@ -61,9 +61,9 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                   Hero(
                     tag: 'news_image_1', // Unique tag for animation
                     child: widget.data.imageUrl.isNotEmpty == true
-                        ? Image.network(
-                            widget.data
-                                .eventBanner!, // Use the actual image if it's not empty
+                        ? FadeInImage.assetNetwork(
+                            placeholder: 'assets/images/placeholder.png',
+                            image: widget.data.eventBanner!,
                             fit: BoxFit.cover,
                           )
                         : Image.asset(

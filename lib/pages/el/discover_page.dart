@@ -1,5 +1,6 @@
 import 'package:fdag/commons/widgets/app_widgets.dart';
 import 'package:fdag/elabs/auth/app_model.dart';
+import 'package:fdag/features/discover/view_all_page.dart';
 import 'package:fdag/models/discover_model.dart';
 import 'package:fdag/models/event_model.dart';
 import 'package:fdag/pages/screens/event_details_page.dart';
@@ -117,6 +118,15 @@ class _DiscoverPageState extends State<DiscoverPage> {
                     action: 'View All',
                     onActionTap: () {
                       // Navigate to all designers
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ViewAllPage(
+                                  key: ValueKey('designers'),
+                                  title: 'Featured Designers',
+                                  collection: 'designers',
+                                )),
+                      );
                     },
                     child: SizedBox(
                       height: 200,
@@ -173,6 +183,15 @@ class _DiscoverPageState extends State<DiscoverPage> {
                     action: 'See More',
                     onActionTap: () {
                       // Navigate to all collections
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ViewAllPage(
+                                  key: ValueKey('collections'),
+                                  title: 'Trending Collections',
+                                  collection: 'collections',
+                                )),
+                      );
                     },
                     child: SizedBox(
                       height: 280,
@@ -378,36 +397,6 @@ class _DiscoverPageState extends State<DiscoverPage> {
           ),
         ],
       ),
-    );
-  }
-
-  void _showSearchModal() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Container(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search trends, designers...',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  prefixIcon: const Icon(Icons.search),
-                ),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Close'),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

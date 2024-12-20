@@ -75,14 +75,14 @@ class SearchCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    // Text(
-                    //   designer.des,
-                    //   style: const TextStyle(
-                    //     fontSize: 14,
-                    //     color: Colors.grey,
-                    //   ),
-                    // ),
-                    // const SizedBox(height: 4),
+                    Text(
+                      designer.description,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
                     Row(
                       children: [
                         const Icon(

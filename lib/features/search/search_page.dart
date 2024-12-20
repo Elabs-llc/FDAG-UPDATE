@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:fdag/features/search/search_card.dart';
+import 'package:fdag/pages/screens/event_details_page.dart';
 import 'package:fdag/utils/providers/search_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -107,7 +108,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             data: (designers) {
               if (designers.isEmpty) {
                 return const Center(
-                  child: Text('No designers found'),
+                  child: Text('No results found'),
                 );
               }
 
@@ -116,7 +117,23 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                 itemCount: designers.length,
                 itemBuilder: (context, index) {
                   final designer = designers[index];
-                  return SearchCard(designer: designer);
+                  return SearchCard(
+                    designer: designer,
+                    onTap: () {
+                      if (designer.subcollection == 'events' ||
+                          designer.subcollection == 'spotlights') {
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => EventDetailsPage(
+                        //       data: designer,
+                        //     ),
+                        //   ),
+                        // );
+                      } else if (designer.subcollection == 'newsUpdates') {
+                      } else {}
+                    },
+                  );
                 },
               );
             },

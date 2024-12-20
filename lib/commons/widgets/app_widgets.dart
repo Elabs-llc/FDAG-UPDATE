@@ -1474,6 +1474,15 @@ class AppWidgets {
                                 );
                               },
                               child: TextField(
+                                onTap: () {
+                                  // Implement search functionality
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => SearchPage(),
+                                    ),
+                                  );
+                                },
                                 readOnly: true,
                                 decoration: const InputDecoration(
                                   hintText: 'Search designers, styles...',
