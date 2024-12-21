@@ -1523,4 +1523,389 @@ class AppWidgets {
       ),
     );
   }
+
+  static Widget buildGridMenu(
+      BuildContext context, BoxConstraints constraints) {
+    return GridView.count(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      crossAxisCount: constraints.maxWidth > 600 ? 4 : 3,
+      mainAxisSpacing: 16,
+      crossAxisSpacing: 16,
+      children: [
+        _buildGridItem(
+          icon: Icons.event,
+          label: 'Events',
+          onTap: () => Navigator.pushNamed(context, '/allEvents'),
+        ),
+        _buildGridItem(
+          icon: Icons.school,
+          label: 'Training',
+          onTap: () => {},
+        ),
+        _buildGridItem(
+          icon: Icons.work,
+          label: 'Jobs',
+          onTap: () => {},
+        ),
+        _buildGridItem(
+          icon: Icons.people,
+          label: 'Members',
+          onTap: () => {},
+        ),
+        _buildGridItem(
+          icon: Icons.newspaper,
+          label: 'News',
+          onTap: () => Navigator.pushNamed(context, '/allEvents'),
+        ),
+        _buildGridItem(
+          icon: Icons.folder,
+          label: 'Resources',
+          onTap: () => {},
+        ),
+      ],
+    );
+  }
+
+  static Widget _buildGridItem({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(12),
+      elevation: 2,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: EdgeInsets.all(8),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 32,
+                color: Colors.blue[700],
+              ),
+              SizedBox(height: 8),
+              Text(
+                label,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  static Widget buildListSection({
+    required String title,
+    required List<Widget> items,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[800],
+            ),
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey,
+                spreadRadius: 1,
+                blurRadius: 5,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(children: items),
+        ),
+      ],
+    );
+  }
+
+  static Widget buildListItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            Icon(icon, size: 22, color: Colors.grey[700]),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.grey[800],
+                ),
+              ),
+            ),
+            Icon(Icons.chevron_right, color: Colors.grey[400], size: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static Widget buildFAQCategory({
+    required String title,
+    required IconData icon,
+    required List<Map<String, String>> faqs,
+    required BoxConstraints constraints,
+  }) {
+    return Container(
+      constraints: BoxConstraints(
+        maxWidth: constraints.maxWidth,
+        minHeight: 48,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color:
+                const Color(0xFFE0E0E0), // Using solid color instead of opacity
+            offset: const Offset(0, 2),
+            blurRadius: 6,
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: Theme(
+        data: ThemeData().copyWith(
+          dividerColor: Colors.transparent,
+        ),
+        child: ExpansionTile(
+          title: Row(
+            children: [
+              Icon(icon, size: 24),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          children: faqs.map((faq) => _buildFAQItem(faq, constraints)).toList(),
+        ),
+      ),
+    );
+  }
+
+  static Widget _buildFAQItem(
+      Map<String, String> faq, BoxConstraints constraints) {
+    return Container(
+      constraints: BoxConstraints(
+        maxWidth: constraints.maxWidth,
+        minHeight: 48,
+      ),
+      child: ExpansionTile(
+        title: Text(
+          faq['question']!,
+          style: const TextStyle(fontSize: 15),
+        ),
+        children: [
+          Container(
+            constraints: BoxConstraints(
+              maxWidth: constraints.maxWidth - 32, // Accounting for padding
+              minHeight: 48,
+            ),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            alignment: Alignment.centerLeft,
+            child: Text(
+              faq['answer']!,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey.shade600,
+                height: 1.5,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static Widget buildContactCard(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+    required BoxConstraints constraints,
+  }) {
+    return Container(
+      constraints: BoxConstraints(
+        maxWidth: constraints.maxWidth,
+        minHeight: 80,
+      ),
+      child: Material(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        elevation: 2,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Icon(icon, color: Theme.of(context).primaryColor),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        subtitle,
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: Colors.grey.shade400,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  static Widget buildTimelineItem({
+    required String year,
+    required String title,
+    required String description,
+    required BoxConstraints constraints,
+    required BuildContext context,
+    bool isLast = false,
+  }) {
+    return Container(
+      constraints: BoxConstraints(
+        maxWidth: constraints.maxWidth,
+        minHeight: 80,
+      ),
+      child: IntrinsicHeight(
+        child: Row(
+          children: [
+            SizedBox(
+              width: 80,
+              child: Text(
+                year,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Column(
+              children: [
+                Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                if (!isLast)
+                  Expanded(
+                    child: Container(
+                      width: 2,
+                      color: const Color(0xFFE0E0E0),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    description,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey.shade700,
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static Widget buildSocialButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Icon(icon, size: 32),
+          const SizedBox(height: 8),
+          Text(label),
+        ],
+      ),
+    );
+  }
 }

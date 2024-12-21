@@ -1,3 +1,7 @@
+import 'package:fdag/features/more/about_page.dart';
+import 'package:fdag/features/more/help_center_page.dart';
+import 'package:fdag/features/notification/notification_page.dart';
+import 'package:fdag/features/notification/notification_settings.dart';
 import 'package:fdag/pages/auth/login.dart';
 import 'package:fdag/pages/auth/signup.dart';
 import 'package:fdag/pages/home.dart';
@@ -40,6 +44,10 @@ class El extends StatelessWidget {
         '/byLaws': (contex) => BylawsPage(),
         '/missionVision': (context) => MissionVisionPage(),
         '/founders': (context) => FoundingMembersPage(),
+        'helpCenter': (context) => HelpCenterPage(),
+        'aboutPage': (context) => AboutPage(),
+        'notificationSettings': (context) => NotificationSettings(),
+        'notificationPage': (context) => NotificationPage(),
       },
     );
   }

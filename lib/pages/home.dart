@@ -2,7 +2,7 @@ import 'package:fdag/commons/colors/el_color.dart';
 import 'package:fdag/commons/colors/sizes.dart';
 import 'package:fdag/commons/widgets/app_widgets.dart';
 import 'package:fdag/elabs/config.dart';
-import 'package:fdag/pages/el/by_laws.dart';
+import 'package:fdag/features/more/more_screen.dart';
 import 'package:fdag/pages/el/gallery.dart';
 import 'package:fdag/pages/el/home_view.dart';
 import 'package:fdag/pages/el/discover_page.dart';
@@ -107,7 +107,7 @@ class _HomeState extends State<Home> {
             HomeView(),
             Gallery(),
             DiscoverPage(),
-            ByLaws(),
+            MoreScreen(),
           ],
         ),
       ),

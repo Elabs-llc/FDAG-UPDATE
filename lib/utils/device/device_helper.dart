@@ -60,6 +60,17 @@ class DeviceHelper {
     }
   }
 
+  static Future<void> openWhatsApp(String number, String message) async {
+    final Uri launchUri = Uri.parse(
+      'https://wa.me/$number?text=${Uri.encodeComponent(message)}',
+    );
+    if (await canLaunchUrl(launchUri)) {
+      await launchUrl(launchUri);
+    } else {
+      throw 'Could not open WhatsApp for $number';
+    }
+  }
+
   // Function to open the URL in an in-app browser
   static Future<void> launchInBrowser(String url, BuildContext context) async {
     final Uri uri = Uri.parse(url);

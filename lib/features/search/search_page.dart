@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:fdag/features/search/search_card.dart';
-import 'package:fdag/pages/screens/event_details_page.dart';
 import 'package:fdag/utils/providers/search_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
