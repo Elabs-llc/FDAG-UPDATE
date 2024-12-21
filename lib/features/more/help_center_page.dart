@@ -130,7 +130,6 @@ class _HelpCenterPageState extends State<HelpCenterPage> {
     );
   }
 
-  // Implementation methods remain the same
   void _launchEmail() {
     DeviceHelper.sendEmail(AppConstants.email, context);
   }

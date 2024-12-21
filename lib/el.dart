@@ -1,5 +1,7 @@
 import 'package:fdag/features/more/about_page.dart';
 import 'package:fdag/features/more/help_center_page.dart';
+import 'package:fdag/features/more/privacy_policy_page.dart';
+import 'package:fdag/features/more/terms_condition_page.dart';
 import 'package:fdag/features/notification/notification_page.dart';
 import 'package:fdag/features/notification/notification_settings.dart';
 import 'package:fdag/pages/auth/login.dart';
@@ -48,6 +50,8 @@ class El extends StatelessWidget {
         'aboutPage': (context) => AboutPage(),
         'notificationSettings': (context) => NotificationSettings(),
         'notificationPage': (context) => NotificationPage(),
+        'privacyPolicy': (context) => PrivacyPolicyPage(),
+        'termsOfService': (context) => TermsConditionPage(),
       },
     );
   }

@@ -66,7 +66,8 @@ class _MoreScreenState extends State<MoreScreen> {
                           AppWidgets.buildListItem(
                             icon: Icons.privacy_tip,
                             title: 'Privacy Policy',
-                            onTap: () => {},
+                            onTap: () =>
+                                Navigator.pushNamed(context, 'privacyPolicy'),
                           ),
                           Divider(
                             color: Color.fromARGB(90, 158, 158, 158),
@@ -75,7 +76,8 @@ class _MoreScreenState extends State<MoreScreen> {
                           AppWidgets.buildListItem(
                             icon: Icons.description,
                             title: 'Terms of Service',
-                            onTap: () => {},
+                            onTap: () =>
+                                Navigator.pushNamed(context, 'termsOfService'),
                           ),
                         ],
                       ),
